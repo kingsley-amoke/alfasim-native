@@ -708,6 +708,8 @@ export const handleBuyData = async (
   handleCommission(data, commission, referee, referral_bonus);
 
   setTransaction(data);
+
+  
 };
 
 export const handleBuyAirtime = async (data: transactionTypes) => {

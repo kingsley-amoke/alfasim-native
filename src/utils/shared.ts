@@ -1,4 +1,5 @@
-import { MaterialIcons } from "@expo/vector-icons";
+
+import Toast from 'react-native-root-toast'
 
 export const actions = [
     {
@@ -39,3 +40,26 @@ export const actions = [
     },
     
   ]
+
+  //toast
+
+  export const CustomToast = (message: string, bgColor:string, textColor:string) => {
+
+    return (Toast.show(message, {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.TOP,
+      shadow: true,
+      animation: true,
+    hideOnPress: true,
+    delay: 0,
+    backgroundColor: bgColor,
+    textColor: textColor,
+    textStyle:{
+      fontSize: 16,
+      fontWeight: 'bold'
+    },
+    containerStyle: {
+      marginTop:70
+    }
+  }))
+  }

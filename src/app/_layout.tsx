@@ -11,6 +11,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import merge from "deepmerge";
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import { Colors } from "../constants/Colors";
 import { StatusBar } from "expo-status-bar";
@@ -70,6 +71,8 @@ export default function RootLayout() {
   }, []);
 
   return (
+    <RootSiblingParent>
+
     <PaperProvider theme={paperTheme}>
       <ThemeProvider value={paperTheme}>
         <Stack>
@@ -97,5 +100,6 @@ export default function RootLayout() {
       </ThemeProvider>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
     </PaperProvider>
+    </RootSiblingParent>
   );
 }

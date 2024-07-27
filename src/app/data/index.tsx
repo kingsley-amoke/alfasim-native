@@ -4,6 +4,7 @@ import { Plan, transactionTypes } from "@/src/utils/types";
 import {
   buyData,
   deductBalance,
+  fetchUser,
   handleBuyData,
   setTransaction,
 } from "@/src/utils/data";
@@ -14,6 +15,7 @@ import useTheme from "@/src/hooks/useTheme";
 import { Button, Dialog, Divider, Portal, TextInput } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
+import { CustomToast } from "@/src/utils/shared";
 
 const index = () => {
   interface DataType {
@@ -24,7 +26,7 @@ const index = () => {
   const router = useRouter();
 
   const { plans } = useDataPlanStore();
-  const { user } = useUserStore();
+  const { user, storeUser } = useUserStore();
 
   const { colorScheme } = useTheme();
 
@@ -32,6 +34,11 @@ const index = () => {
     colorScheme === "dark" ? Colors.dark.inversePrimary : Colors.light.primary;
   const textColor =
     colorScheme == "dark" ? Colors.dark.onBackground : Colors.light.onPrimary;
+
+
+    const errorToastBg =  colorScheme === "dark" ? Colors.dark.error : Colors.light.error;
+    const errorToastText = colorScheme === "dark" ? Colors.dark.onError : Colors.light.onError;
+
 
   const [visible, setVisible] = useState(false);
 
@@ -556,7 +563,8 @@ const index = () => {
       parseInt(user?.balance) < parseInt(selectedPlan?.plan_amount) ||
       !user.balance
     ) {
-      console.log("Insufficient Balance");
+
+      CustomToast("Insufficient Balance", errorToastBg, errorToastText);
       return;
     }
 
@@ -590,13 +598,13 @@ const index = () => {
       };
 
       setTransaction(data);
-      console.log("Network error, Try again later");
+      CustomToast("Network error, Try again later", errorToastBg, errorToastText);
       setLoading(false);
       return;
     }
 
     if (response.Status === "successful") {
-      console.log("Successfull");
+      CustomToast("Successfull", bgColor, textColor);
 
       setLoading(false);
 
@@ -622,8 +630,10 @@ const index = () => {
         commission,
         user?.referee,
         user?.referral_bonus!
-      ).then(() => {
-        router.push("/dashboard");
+      ).then(async() => {
+        const user = await fetchUser(data.email);
+        storeUser(user![0]);
+        router.push("/");
       });
 
       // setTransaction(data);
