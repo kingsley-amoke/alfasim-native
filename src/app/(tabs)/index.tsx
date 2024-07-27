@@ -15,8 +15,8 @@ export default function Index() {
 
   const {user} = useUserStore()
 
-  const bgColor = colorScheme === "dark" ? Colors.dark.primary : Colors.light.primary
-  const textColor = colorScheme == "dark" ? Colors.dark.onPrimary : Colors.light.onPrimary;
+  const bgColor = colorScheme === "dark" ? Colors.dark.inversePrimary : Colors.light.primary
+  const textColor = colorScheme == "dark" ? Colors.dark.onBackground : Colors.light.onPrimary;
   const balance = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'NGN' }).format(parseInt(user?.balance!))
 
   return (

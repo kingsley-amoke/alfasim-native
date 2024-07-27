@@ -17,8 +17,9 @@ import { StatusBar } from "expo-status-bar";
 import useTheme from "../hooks/useTheme";
 import { useEffect } from "react";
 import { supabase } from "../utils/supabase";
-import { fetchUser } from "../utils/data";
-import { useUserStore } from "../state/store";
+import { fetchUser, getDataPlans } from "../utils/data";
+import { useDataPlanStore, useUserStore } from "../state/store";
+import { dataPlanTypes } from "../utils/types";
 
 const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
 const customLightTheme = { ...MD3LightTheme, colors: Colors.light };
@@ -36,6 +37,7 @@ export default function RootLayout() {
 
   const { colorScheme } = useTheme();
   const { storeUser } = useUserStore();
+  const {storePlans} = useDataPlanStore();
 
   const iconColor = colorScheme === "dark" ? "white" : "black";
 
@@ -57,8 +59,14 @@ export default function RootLayout() {
     }
   };
 
+  const getPlans = async() => {
+    const plans: dataPlanTypes = await getDataPlans();
+    storePlans(plans)
+  }
+
   useEffect(() => {
     getUser();
+    getPlans();
   }, []);
 
   return (
@@ -75,6 +83,14 @@ export default function RootLayout() {
             name="(public)"
             options={{
               headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="data/index"
+            options={{
+              title: "Buy Data",
+              headerTitleAlign: "center",
+              
             }}
           />
         </Stack>

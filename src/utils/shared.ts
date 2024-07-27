@@ -4,49 +4,38 @@ export const actions = [
     {
       id:1,
       name: 'Buy Data',
-      icon: "shopping-cart",
+      icon: "signal-cellular-alt",
       link: 'data'
     },
     {
       id:2,
-      name: 'Sell Data',
-      icon: "monetization-on",
-      link:'sell'
+      name: 'Airtime Topup',
+      icon: "add-call",
+      link:'airtime'
     },
     {
       id:3,
-      name: 'Transactions',
+      name: 'Aitime 2 Cash',
       icon: 'payment',
-      link:'transactions'
+      link:'aitime-to-cash'
     },
     {
       id:4,
-      name: 'Profile',
-      icon: "person",
-      link:'profile'
+      name: 'Cable Sub',
+      icon: "live-tv",
+      link:'cable'
     },
     {
       id:5,
-      name: 'Logout',
-      icon: "logout",
-      link:'logout'
+      name: 'Electricity SUb',
+      icon: "electric-bolt",
+      link:'electricity'
     },
     {
       id:6,
-      name: 'Settings',
-      icon: "settings",
-      link:'settings'
+      name: 'Scratch Card',
+      icon: "airplane-ticket",
+      link:'scratch-card'
     },
-    {
-      id:7,
-      name: 'Help',
-      icon: "help-outline",
-      link:'help'
-    },
-    {
-      id:8,
-      name: 'About',
-      icon: "info-outline",
-      link:'about'
-    }
+    
   ]

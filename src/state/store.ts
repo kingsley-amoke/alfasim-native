@@ -1,6 +1,4 @@
-import {
-  userDataTypes
-} from "@/src/utils/types";
+import { dataPlanTypes, userDataTypes } from "@/src/utils/types";
 
 import { create } from "zustand";
 
@@ -16,7 +14,10 @@ export interface UsersStore {
   updateUsers: (user: userDataTypes) => void;
 }
 
-
+export interface DataStore {
+  plans: dataPlanTypes | null;
+  storePlans: (plans: dataPlanTypes) => void;
+}
 
 // global states
 
@@ -44,6 +45,7 @@ export const useUsersStore = create<UsersStore>((set) => ({
       };
     });
   },
+
   updateUsers: (user) => {
     set((state) => {
       const updatedUsers = state.users.filter(
@@ -61,4 +63,17 @@ export const useUsersStore = create<UsersStore>((set) => ({
   },
 }));
 
+//data plans
 
+export const useDataPlanStore = create<DataStore>((set) => ({
+  plans: null,
+  storePlans(plans) {
+    set((state) => {
+      state.plans = plans;
+
+      return {
+        plans: state.plans,
+      };
+    });
+  },
+}));

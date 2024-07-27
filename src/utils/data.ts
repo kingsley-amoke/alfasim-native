@@ -530,8 +530,8 @@ export const createCustomer = async (data: any) => {
 
 //asb data api integration
 
-const asbUrl = process.env.ASB_URL!;
-const asbToken = process.env.ASB_AUTH_TOKEN!;
+const asbUrl = process.env.EXPO_PUBLIC_ASB_URL!;
+const asbToken = process.env.EXPO_PUBLIC_ASB_AUTH_TOKEN!;
 
 const getASBHeaders = () => ({
   Authorization: `Token ${asbToken}`,
@@ -571,7 +571,7 @@ export const getDataPlans = async () => {
       return res.data;
     }
   } catch (error) {
-    console.log(error);
+    console.log('error' + error);
   }
 };
 
