@@ -8,7 +8,7 @@ const tintColorDark = '#fff';
 
 export const Colors = {
   light: {
-    "colors": {
+    
       "primary": "rgb(0, 104, 116)",
       "onPrimary": "rgb(255, 255, 255)",
       "primaryContainer": "rgb(151, 240, 255)",
@@ -49,10 +49,10 @@ export const Colors = {
       "surfaceDisabled": "rgba(25, 28, 29, 0.12)",
       "onSurfaceDisabled": "rgba(25, 28, 29, 0.38)",
       "backdrop": "rgba(41, 50, 52, 0.4)"
-    }
+    
   },
   dark: {
-    "colors": {
+    
       "primary": "rgb(79, 216, 235)",
       "onPrimary": "rgb(0, 54, 61)",
       "primaryContainer": "rgb(0, 79, 88)",
@@ -94,5 +94,5 @@ export const Colors = {
       "onSurfaceDisabled": "rgba(225, 227, 227, 0.38)",
       "backdrop": "rgba(41, 50, 52, 0.4)"
     }
-  }
+  
 };
