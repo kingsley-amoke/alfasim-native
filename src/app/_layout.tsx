@@ -18,8 +18,8 @@ import { StatusBar } from "expo-status-bar";
 import useTheme from "../hooks/useTheme";
 import { useEffect } from "react";
 import { supabase } from "../utils/supabase";
-import { fetchUser, getDataPlans } from "../utils/data";
-import { useDataPlanStore, useUserStore } from "../state/store";
+import { fetchTransactions, fetchUser, getDataPlans } from "../utils/data";
+import { useDataPlanStore, useTransactionStore, useUserStore } from "../state/store";
 import { dataPlanTypes } from "../utils/types";
 
 const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
@@ -39,6 +39,7 @@ export default function RootLayout() {
   const { colorScheme } = useTheme();
   const { storeUser } = useUserStore();
   const {storePlans} = useDataPlanStore();
+  const {storeTransactions} = useTransactionStore();
 
   const iconColor = colorScheme === "dark" ? "white" : "black";
 
@@ -53,8 +54,10 @@ export default function RootLayout() {
     if (!user) {
       router.replace("/login");
     } else {
-      fetchUser(user?.email).then((user) => {
+      fetchUser(user?.email).then(async(user) => {
         storeUser(user![0]);
+        const transactions = await fetchTransactions(user![0].email);
+        storeTransactions(transactions!)
         router.replace("/");
       });
     }
@@ -64,6 +67,7 @@ export default function RootLayout() {
     const plans: dataPlanTypes = await getDataPlans();
     storePlans(plans)
   }
+
 
   useEffect(() => {
     getUser();
@@ -100,6 +104,14 @@ export default function RootLayout() {
             name="airtime/index"
             options={{
               title: "Airtime Topup",
+              headerTitleAlign: "center",
+              
+            }}
+          />
+           <Stack.Screen
+            name="transactions/[id]"
+            options={{
+              title: "Alfasim Data",
               headerTitleAlign: "center",
               
             }}

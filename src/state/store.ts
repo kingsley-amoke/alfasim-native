@@ -1,4 +1,8 @@
-import { dataPlanTypes, userDataTypes } from "@/src/utils/types";
+import {
+  dataPlanTypes,
+  DBTransactionTypes,
+  userDataTypes,
+} from "@/src/utils/types";
 
 import { create } from "zustand";
 
@@ -17,6 +21,11 @@ export interface UsersStore {
 export interface DataStore {
   plans: dataPlanTypes | null;
   storePlans: (plans: dataPlanTypes) => void;
+}
+
+export interface TransactionStore {
+  transactions: DBTransactionTypes[];
+  storeTransactions: (transactions: DBTransactionTypes[]) => void;
 }
 
 // global states
@@ -73,6 +82,19 @@ export const useDataPlanStore = create<DataStore>((set) => ({
 
       return {
         plans: state.plans,
+      };
+    });
+  },
+}));
+
+export const useTransactionStore = create<TransactionStore>((set) => ({
+  transactions: [],
+  storeTransactions(transactions) {
+    set((state) => {
+      state.transactions = transactions;
+
+      return {
+        trasactions: state.transactions,
       };
     });
   },
