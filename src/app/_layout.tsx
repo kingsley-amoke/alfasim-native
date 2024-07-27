@@ -96,6 +96,14 @@ export default function RootLayout() {
               
             }}
           />
+          <Stack.Screen
+            name="airtime/index"
+            options={{
+              title: "Airtime Topup",
+              headerTitleAlign: "center",
+              
+            }}
+          />
         </Stack>
       </ThemeProvider>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
