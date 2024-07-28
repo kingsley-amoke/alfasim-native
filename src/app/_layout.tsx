@@ -108,6 +108,14 @@ export default function RootLayout() {
               
             }}
           />
+          <Stack.Screen
+            name="fund-wallet/index"
+            options={{
+              title: "Fund Wallet",
+              headerTitleAlign: "center",
+              
+            }}
+          />
            <Stack.Screen
             name="transactions/[id]"
             options={{

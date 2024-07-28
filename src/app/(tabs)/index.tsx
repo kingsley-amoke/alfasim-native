@@ -1,6 +1,6 @@
 import {  ScrollView, TouchableOpacity, View } from "react-native";
 import { useEffect } from "react";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 import { actions } from "@/src/utils/shared";
 import CustomCards from "@/src/components/CustomCard";
@@ -10,6 +10,8 @@ import { Colors } from "@/src/constants/Colors";
 import useTheme from "@/src/hooks/useTheme";
 
 export default function Index() {
+
+  const router = useRouter();
 
   const {colorScheme } = useTheme();
 
@@ -36,7 +38,7 @@ export default function Index() {
           <Text style={{color:textColor, fontSize:20}}>{balance}</Text>
           </View>
           <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', gap:10, marginVertical:20}}>
-           <Button mode="outlined" icon="plus" textColor={textColor}>
+           <Button mode="outlined" icon="plus" textColor={textColor} onPress={() => router.push('/fund-wallet')}>
             Fund Wallet
             </Button>
            <Button mode="outlined" icon="plus" textColor={textColor}>Redeem Bonus</Button>
