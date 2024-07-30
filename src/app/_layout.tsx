@@ -108,6 +108,38 @@ export default function RootLayout() {
               
             }}
           />
+           <Stack.Screen
+            name="cable/index"
+            options={{
+              title: "Cable Subscription",
+              headerTitleAlign: "center",
+              
+            }}
+          />
+           <Stack.Screen
+            name="electricity/index"
+            options={{
+              title: "Electricity Subscription",
+              headerTitleAlign: "center",
+              
+            }}
+          />
+           <Stack.Screen
+            name="scratch-card/index"
+            options={{
+              title: "Scratch Card",
+              headerTitleAlign: "center",
+              
+            }}
+          />
+           <Stack.Screen
+            name="airtime-2-cash/index"
+            options={{
+              title: "Airtime 2 Cash",
+              headerTitleAlign: "center",
+              
+            }}
+          />
           <Stack.Screen
             name="fund-wallet/index"
             options={{

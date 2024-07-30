@@ -12,3 +12,28 @@ const profile = () => {
 export default profile
 
 const styles = StyleSheet.create({})
+
+
+//about
+
+//developers info
+
+
+//terms and conditions
+
+
+//help center
+
+
+//contact us
+
+
+//logout
+
+//change theme
+
+//visit our website
+
+//privacy policy
+
+//change password

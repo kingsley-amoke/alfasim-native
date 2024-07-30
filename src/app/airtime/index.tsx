@@ -45,7 +45,7 @@ const Airtime = () => {
   const [phone, setPhone] = useState("");
   const [network, setNetwork] = useState("");
   const [amount, setAmount] = useState<string>("");
-  const [amountToPay, setAmountToPay] = useState("");
+  const [amountToPay, setAmountToPay] = useState(0);
   const [currentNetwork, setCurrentNetwork] = useState("------");
 
   const networks = [
@@ -60,7 +60,7 @@ const Airtime = () => {
   const handleAmount = (value: string) => {
     if (value !== "") {
       const discount = (2 / 100) * parseInt(value);
-      let pay = (parseInt(value) - discount).toString();
+      let pay = (parseInt(value) - discount);
       setAmount(value);
       setAmountToPay(pay);
     }
@@ -69,7 +69,7 @@ const Airtime = () => {
   const handleSubmitForm = async () => {
     if (!user || !phone || !amount || !network) return;
 
-    if (parseInt(user?.balance) < parseInt(amountToPay) || !user.balance) {
+    if (parseInt(user?.balance) < amountToPay || !user.balance) {
       CustomToast("Insufficient Balance", errorToastBg, errorToastText);
       return;
     }
@@ -113,7 +113,7 @@ const Airtime = () => {
 
       const data: transactionTypes = {
         email: user?.email,
-        amount: amountToPay,
+        amount: amountToPay.toString(),
         purpose: "airtime",
         status: "failed",
         transactionId: "failed",
@@ -137,7 +137,7 @@ const Airtime = () => {
 
       const data: transactionTypes = {
         email: user?.email,
-        amount: amountToPay,
+        amount: amountToPay.toString(),
         purpose: "airtime",
         status: response.Status,
         transactionId: response.ident,
@@ -145,7 +145,7 @@ const Airtime = () => {
         network: networkName,
         planSize: amount,
         previousBalance: user.balance,
-        newBalance: (parseInt(user.balance) - parseInt(amountToPay)).toString(),
+        newBalance: (parseInt(user.balance) - amountToPay).toString(),
       };
 
       handleBuyAirtime(data).then(async() => {
@@ -157,7 +157,7 @@ const Airtime = () => {
       if (response.Status !== "failed") {
         const data: transactionTypes = {
           email: user?.email,
-          amount: amountToPay,
+          amount: amountToPay.toString(),
           purpose: "airtime",
           status: response.Status,
           transactionId: response.ident,
@@ -166,7 +166,7 @@ const Airtime = () => {
           planSize: amount,
           previousBalance: user.balance,
           newBalance: (
-            parseInt(user.balance) - parseInt(amountToPay)
+            parseInt(user.balance) - amountToPay
           ).toString(),
         };
         CustomToast(response.Status, errorToastBg, errorToastText);
@@ -180,7 +180,7 @@ const Airtime = () => {
 
       const data: transactionTypes = {
         email: user?.email,
-        amount: amountToPay,
+        amount: amountToPay.toString(),
         purpose: "airtime",
         status: response.Status,
         transactionId: response.ident,
@@ -191,7 +191,7 @@ const Airtime = () => {
         newBalance:
           response.results[0].Status === "failed"
             ? user.balance
-            : (parseInt(user.balance) - parseInt(amountToPay)).toString(),
+            : (parseInt(user.balance) - amountToPay).toString(),
       };
 
       setTransaction(data);
@@ -246,16 +246,17 @@ const Airtime = () => {
           onChangeText={(value) => handleAmount(value)}
         />
         <Divider bold horizontalInset style={{ marginBottom: 30 }} />
-        <Text>Amount To Pay</Text>
+       
         <TextInput
           mode="outlined"
+          keyboardType="numeric"
           label="Amount To Pay"
-          value={amountToPay}
+          value={amountToPay.toString()}
           disabled
-          onChangeText={(value) => setAmountToPay(value)}
+          
         />
         <Button
-          mode="outlined"
+          mode="contained"
           style={{ marginVertical: 20 }}
           onPress={showDialog}
           disabled={loading ? true : false}
@@ -272,6 +273,7 @@ const Airtime = () => {
             </Dialog.Content>
             <Dialog.Actions>
               <Button
+              
                 onPress={() => {
                   handleSubmitForm();
                   hideDialog();

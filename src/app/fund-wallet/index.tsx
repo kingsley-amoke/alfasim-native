@@ -1,27 +1,32 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { useUserStore } from "@/src/state/store";
-import { paystackPay, verifyPayment, verifyPaystackTransaction } from "@/src/utils/data";
-import { Button, TextInput } from "react-native-paper";
+import { verifyPayment, } from "@/src/utils/data";
+import { ActivityIndicator, Button, MD2Colors, TextInput } from "react-native-paper";
 
 import  { Paystack, paystackProps }  from 'react-native-paystack-webview';
 import { CustomToast } from "@/src/utils/shared";
 import { Colors } from "@/src/constants/Colors";
 import useTheme from "@/src/hooks/useTheme";
+import { useRouter } from "expo-router";
 
 const index = () => {
 
+
+  const router = useRouter();
+
   const paystackKey = process.env.EXPO_PUBLIC_PAYSTACK_SECRET_KEY as string;
 
-  const { user } = useUserStore();
+  const { user, increaseUserBalance } = useUserStore();
   const { colorScheme } = useTheme();
 
   const paystackWebViewRef = useRef<paystackProps.PayStackRef>(); 
 
   const [amount, setAmount] = useState<number>(0);
+  const [paying, setPaying] = useState(false);
 
-  const errorBgColor = colorScheme === "dark" ? Colors.dark.errorContainer : Colors.light.errorContainer;
-  const errorTextColor = colorScheme === "dark"? Colors.dark.error : Colors.light.error;
+  const errorBgColor = colorScheme === "dark" ? Colors.dark.error : Colors.light.error;
+  const errorTextColor = colorScheme === "dark"? Colors.dark.onError : Colors.light.onError;
 
 
   const handleInputChange = (value: string) => {
@@ -33,13 +38,19 @@ const index = () => {
 
   const handlePayment = async({data}) => {
 
+    setPaying(true)
+
     const reference = data.transactionRef.trxref;
 
-    verifyPaystackTransaction(reference).then((res) => {
-      console.log(res);
+    verifyPayment(user, reference).then(() => {
+      CustomToast("Successfull", 'green', 'white')
+increaseUserBalance(amount)
+      router.replace('/');
+      setPaying(false)
     })
 
   }
+
 
 
   return (
@@ -50,13 +61,18 @@ const index = () => {
         alignItems: "center",
         padding: 20,
       }}
-    >
+    >{
+      !paying ? (
+
+    
       <View style={{ padding: 10, borderWidth: 1, borderRadius: 10 }}>
       <Paystack 
-        paystackKey="pk_test_2e5447a1ae8b8beaba3dc9331ccc00fd8bcb7f74"
+        paystackKey={paystackKey}
         amount={amount}
+        channels={['bank_transfer', 'card', 'bank', 'qr', 'mobile_money', 'ussd']}
+      
         billingEmail={user?.email!}
-        activityIndicatorColor="green"
+        activityIndicatorColor="teal"
         onCancel={(e) => {
           CustomToast("Payment cancelled", errorBgColor, errorTextColor)
         }}
@@ -84,6 +100,7 @@ const index = () => {
           <TextInput
             mode="outlined"
             label="Amount"
+            autoFocus
             onChangeText={(value) => handleInputChange(value)}
             placeholder="Enter amount to recharge"
           />
@@ -94,6 +111,13 @@ const index = () => {
 
         
       </View>
+
+) : (<>
+  <ActivityIndicator size={30} animating color={MD2Colors.teal400} style={{marginBottom:30}} />
+  <Text>Processing, please wait...</Text>
+</>
+)
+}
     </View>
   );
 };

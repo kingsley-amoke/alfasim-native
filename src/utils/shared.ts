@@ -18,7 +18,7 @@ export const actions = [
       id:3,
       name: 'Aitime 2 Cash',
       icon: 'payment',
-      link:'aitime-to-cash'
+      link:'airtime-2-cash'
     },
     {
       id:4,

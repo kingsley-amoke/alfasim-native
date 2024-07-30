@@ -496,11 +496,11 @@ export const paystackPay = async ({
 export const verifyPaystackTransaction = async (reference: string) => {
   try {
     const response = await fetch(
-      `${paystackUrl}/transaction/verify/${reference}`,
+      `https://api.paystack.co/transaction/verify/${reference}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${secretKey}`,
+          Authorization: `Bearer pk_live_e924eb5961cb52bf5f3459bc922905de06443214`,
         },
       }
     );
@@ -571,7 +571,7 @@ export const getDataPlans = async () => {
       return res.data;
     }
   } catch (error) {
-    console.log('error' + error);
+    console.log("error" + error);
   }
 };
 
@@ -646,6 +646,7 @@ export const buyAirtime = async (data: {
 
 export const verifyPayment = async (user: userDataTypes, reference: string) => {
   const response = await verifyPaystackTransaction(reference);
+
   if (response.data.status === "success") {
     const trans: transactionTypes = {
       email: user.email,
@@ -672,24 +673,6 @@ export const verifyPayment = async (user: userDataTypes, reference: string) => {
     recharge(user?.email, rechargeAmount);
 
     setTransaction(trans);
-
-    // } else {
-    //   const trans: transactionTypes = {
-    //     email: user.email,
-    //     purpose: "wallet",
-    //     amount: (response.data.amount / 100).toString(),
-    //     status: response.data.status,
-    //     network: response.data.channel,
-    //     planSize: response.data.currency,
-    //     previousBalance: user?.balance,
-    //     newBalance: user?.balance,
-    //     phone: reference,
-    //     transactionId: response.data.id,
-    //   };
-
-    //   await setTransaction(trans);
-
-    // }
   }
 
   return "finished";
@@ -708,8 +691,6 @@ export const handleBuyData = async (
   handleCommission(data, commission, referee, referral_bonus);
 
   setTransaction(data);
-
-  
 };
 
 export const handleBuyAirtime = async (data: transactionTypes) => {
