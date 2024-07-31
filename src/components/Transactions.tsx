@@ -24,7 +24,7 @@ const Transactions = ({ items }: { items: DBTransactionTypes[] }) => {
     <DataTable>
       <DataTable.Header>
         <DataTable.Title>Type</DataTable.Title>
-        <DataTable.Title numeric>{items[0].purpose === 'wallet' ? 'Reference ID' : 'Phone Number'}</DataTable.Title>
+        <DataTable.Title numeric>{items[0]?.purpose === 'wallet' ? 'Reference ID' : 'Phone Number'}</DataTable.Title>
         <DataTable.Title numeric>Amunt</DataTable.Title>
       </DataTable.Header>
 
