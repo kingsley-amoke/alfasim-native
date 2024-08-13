@@ -1,6 +1,6 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import { Button, TextInput } from "react-native-paper";
+import { Button } from "react-native-paper";
 import { Link, useRouter } from "expo-router";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,9 +10,16 @@ import useTheme from "@/src/hooks/useTheme";
 import { Colors } from "@/src/constants/Colors";
 import ValidatedInput from "@/src/components/ValidatedInput";
 import { useForm } from "react-hook-form";
+import { CustomToast } from "@/src/utils/shared";
+import { supabase } from "@/src/utils/supabase";
+import { createCustomer, handleReferral } from "@/src/utils/data";
 
 const register = () => {
+
+const router = useRouter()
+
   const { colorScheme } = useTheme();
+  const {storeUser} = useUserStore();
 
   const [loading, setLoading] = useState(false);
 
@@ -25,18 +32,17 @@ const register = () => {
 
   const formSchema = z
     .object({
-      firstName: z
-        .string()
-        .toLowerCase()
-        .min(3, "FirstName must me more than 3 letters"),
-      lastName: z
-        .string()
-        .toLowerCase()
-        .min(3, "LastName must me more than 3 letters"),
+      firstname: z
+        .string().toLowerCase()
+        .min(3, "FirstName must be more than 3 letters"),
+      lastname: z
+        .string().toLowerCase()
+        .min(3, "LastName must be more than 3 letters"),
       email: z.string().email("Please enter a valid email"),
       phone: z.string().min(11, "Please enter a valid phone number"),
+      referee: z.string().optional(),
       password: z.string().min(6, "Password must be at least 6 characters"),
-      passwordConfirm: z.string(),
+      passwordConfirm: z.string()
     })
     .refine(
       (data) => {
@@ -60,11 +66,74 @@ const register = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const handleRegister = async (data) => {
+  const onSubmit = async(data: z.infer<typeof formSchema>) => {
+
 setLoading(true);
-    console.log(data)
+
+const credentials = {
+  email: data.email,
+  password: data.password,
+};
+
+const {
+  data: { user },
+  error,
+} = await supabase.auth.signUp(credentials);
+
+if (error) {
+  CustomToast(error.message, errorColor, textColor);
+  setLoading(false);
+  return;
+}
+
+
+const newUser = {
+  uuid: user?.id,
+  email: data.email,
+  first_name: data.firstname,
+  last_name: data.lastname,
+  balance: 0,
+  referrals: 0,
+  referral_bonus: 0,
+  username: data?.email?.slice(0, -10),
+  referee: data.referee || null,
+  is_admin: false,
+}
+
+supabase.from("users")
+.insert([newUser])
+.select().then(() => {
+
+  const localUser = {
+     email: newUser.email,
+      username: newUser.username,
+      balance: "0",
+      referrals: "0",
+      referee: newUser.referee,
+      referral_bonus: "0",
+      is_admin: false
+  }
+  if(data.referee){
+
+    
+    CustomToast("Registration Successful", textColor, bgColor);
+    storeUser(localUser)
+    router.replace("/");
+
+    handleReferral(data.referee, data.email)
     setLoading(false);
+  }else{
+    CustomToast("Registration Successful", textColor, bgColor);
+    storeUser(localUser)
+    router.replace("/");
+    setLoading(false);
+  }
+  
+})
+
+
   };
+
   return (
     <ScrollView style={{ flex: 1}}>
       <Text style={{ fontWeight: "bold", fontSize: 22, marginVertical: 20, textAlign:'center' }}>
@@ -78,6 +147,7 @@ setLoading(true);
         <ValidatedInput control={control} name={"lastname"} label="Last Name"/>
         <ValidatedInput control={control} name={"email"} label="Email"/>
         <ValidatedInput control={control} name={"phone"} keyboardType='numeric' label="Phone Number"/>
+        <ValidatedInput control={control} name={"referee"} label="Referee (Optional)"/>
         <ValidatedInput control={control} name={"password"} label="Password"/>
         <ValidatedInput control={control} name={"passwordConfirm"} label='Confirm Password'/>
         </View>
@@ -94,19 +164,13 @@ setLoading(true);
       >
         <Button
           style={{
-            width: "100%",
-            backgroundColor: bgColor,
-            paddingVertical: 5,
-            paddingHorizontal: 30,
-            borderRadius: 10,
+            width: "100%",         
           }}
-          onPress={handleSubmit(handleRegister)}
+           mode="contained"
+          onPress={handleSubmit(onSubmit)}
         >
-          <Text
-            style={{ color: textColor, fontSize: 20, fontWeight: "condensed" }}
-          >
+          
             {loading ? "Please wait..." : "Register"}
-          </Text>
         </Button>
         <Text style={{ marginVertical: 10 }}>
           Already a member?{" "}

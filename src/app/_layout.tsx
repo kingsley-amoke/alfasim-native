@@ -1,4 +1,4 @@
-import { Stack, useRouter } from "expo-router";
+import { Redirect, Stack, useRouter } from "expo-router";
 import {
   MD3DarkTheme,
   MD3LightTheme,
@@ -17,9 +17,8 @@ import { Colors } from "../constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import useTheme from "../hooks/useTheme";
 import { useEffect } from "react";
-import { supabase } from "../utils/supabase";
-import { fetchTransactions, fetchUser, getDataPlans } from "../utils/data";
-import { useDataPlanStore, useTransactionStore, useUserStore } from "../state/store";
+import {  getDataPlans } from "../utils/data";
+import { useDataPlanStore} from "../state/store";
 import { dataPlanTypes } from "../utils/types";
 
 const customDarkTheme = { ...MD3DarkTheme, colors: Colors.dark };
@@ -37,31 +36,14 @@ export default function RootLayout() {
   const router = useRouter();
 
   const { colorScheme } = useTheme();
-  const { storeUser } = useUserStore();
-  const {storePlans} = useDataPlanStore();
-  const {storeTransactions} = useTransactionStore();
 
-  const iconColor = colorScheme === "dark" ? "white" : "black";
+  const {storePlans} = useDataPlanStore();
+
+
 
   const paperTheme =
     colorScheme === "dark" ? CombinedDarkTheme : CombinedDefaultTheme;
 
-  const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.replace("/login");
-    } else {
-      fetchUser(user?.email).then(async(user) => {
-        storeUser(user![0]);
-        const transactions = await fetchTransactions(user![0].email);
-        storeTransactions(transactions!)
-        router.replace("/");
-      });
-    }
-  };
 
   const getPlans = async() => {
     const plans: dataPlanTypes = await getDataPlans();
@@ -70,7 +52,6 @@ export default function RootLayout() {
 
 
   useEffect(() => {
-    getUser();
     getPlans();
   }, []);
 
@@ -91,6 +72,12 @@ export default function RootLayout() {
             options={{
               headerShown: false,
             }}
+          />
+          <Stack.Screen 
+          name="index"
+          options={{
+            headerShown:false
+          }}
           />
           <Stack.Screen
             name="data/index"

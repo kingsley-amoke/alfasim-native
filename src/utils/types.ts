@@ -9,7 +9,7 @@ export interface userDataTypes {
   balance: string;
   referrals?: string;
   referral_bonus: string;
-  referee:string;
+  referee:string | null;
   is_admin: boolean;
 }
 

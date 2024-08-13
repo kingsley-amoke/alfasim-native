@@ -1,10 +1,11 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
-import { Tabs, useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { Redirect, Tabs, useRouter } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "@/src/utils/supabase";
 
 const TabLayout = () => {
+
   const router = useRouter();
 
   const logout = () => {
@@ -13,12 +14,13 @@ const TabLayout = () => {
     });
   };
   return (
-    <Tabs>
+    <Tabs screenOptions={{tabBarStyle: {padding:15, height:50}, tabBarLabelStyle: {fontSize:10, fontWeight:'bold'}}}>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
-          title: "Home",
+          title: "Alfasim Data",
           headerTitleAlign: "center",
+          tabBarLabel: 'Home',
           tabBarIcon: ({color}) => (
             <MaterialIcons name="home" size={20} color={color}/>
           ),
@@ -36,16 +38,6 @@ const TabLayout = () => {
         }}
       />
 
-      <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          headerTitleAlign: "center",
-          tabBarIcon: ({color}) => (
-            <MaterialIcons name="settings" size={20} color={color}/>
-          ),
-        }}
-      />
 
       <Tabs.Screen
         name="transactions"
@@ -54,6 +46,16 @@ const TabLayout = () => {
           headerTitleAlign: "center",
           tabBarIcon: ({color}) => (
             <MaterialIcons name="currency-exchange" size={20} color={color}/>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          headerTitleAlign: "center",
+          tabBarIcon: ({color}) => (
+            <MaterialIcons name="settings" size={20} color={color}/>
           ),
         }}
       />

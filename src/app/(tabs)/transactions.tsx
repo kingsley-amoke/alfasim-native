@@ -31,11 +31,11 @@ const transactions = () => {
           { value: "airtime", label: "Airtime" },
           {
             value: "recharge",
-            label: "Recharge",
+            label: "Deposit",
           },
         ]}
       />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {value === "all" ? (
           <View style={{paddingHorizontal:10}}>
             <Transactions items={transactions}/>

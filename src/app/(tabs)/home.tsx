@@ -1,5 +1,5 @@
-import { ScrollView, TouchableOpacity, View } from "react-native";
-import { useEffect, useRef, useState } from "react";
+import { ScrollView, TouchableOpacity, useColorScheme, View } from "react-native";
+import { useState } from "react";
 import { Link, useRouter } from "expo-router";
 
 import { actions, CustomToast } from "@/src/utils/shared";
@@ -7,7 +7,7 @@ import CustomCards from "@/src/components/CustomCard";
 import { useUserStore } from "@/src/state/store";
 import { Button, Text } from "react-native-paper";
 import { Colors } from "@/src/constants/Colors";
-import useTheme from "@/src/hooks/useTheme";
+
 import {
   FontAwesome6,
   MaterialCommunityIcons,
@@ -15,14 +15,12 @@ import {
 } from "@expo/vector-icons";
 import { redeemBonus } from "@/src/utils/data";
 
-export default function Index() {
+export default function home() {
   const router = useRouter();
 
-  const { colorScheme } = useTheme();
+  const  colorScheme = useColorScheme();
 
   const { user, redeemUserBonus, increaseUserBalance } = useUserStore();
-
-  if (!user) return;
 
   const [clickedRedeem, setClickedRedeem] = useState(false);
 
@@ -79,6 +77,7 @@ export default function Index() {
         flex: 1,
         marginHorizontal: 10,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <View>
         <Text style={{ fontWeight: "bold", fontSize: 18, marginVertical: 10 }}>
@@ -193,7 +192,7 @@ export default function Index() {
       >
         {actions.map((action) => (
           <Link href={`${action.link}`} key={action.id} asChild>
-            <TouchableOpacity style={{ width: 180 }}>
+            <TouchableOpacity style={{ width: 150 }}>
               <CustomCards action={action} />
             </TouchableOpacity>
           </Link>
