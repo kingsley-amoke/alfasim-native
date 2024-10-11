@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.smoqdev.alfasimdata"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +33,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "f75baa13-5b3c-4757-8b30-a08d0bd642b5"
+      }
     }
   }
 }

@@ -1,0 +1,34 @@
+{
+  "cli": {
+    "version": ">= 12.5.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal"
+    },
+    "local": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+       "EXPO_PUBLIC_SUPABASE_URL":"https://jwstppltyxxwclhnloiy.supabase.co",
+       "EXPO_PUBLIC_SUPABASE_ANON_KEY":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp3c3RwcGx0eXh4d2NsaG5sb2l5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTIxNjQ5NDksImV4cCI6MjAyNzc0MDk0OX0.EV8PoxQWQgGjfvGiCdmkQtEfXtjHeo8gEecZnC-QVtc",
+       "EXPO_PUBLIC_ASB_URL":"https://asbdata.com/api",
+       "EXPO_PUBLIC_ASB_AUTH_TOKEN":"34851307c58aeebfc0f4dec980e9cacee77e86c9",
+       "EXPO_PUBLIC_PAYSTACK_PAYMENT_URL":"https://api.paystack.co",
+       "EXPO_PUBLIC_PAYSTACK_SECRET_KEY":"sk_live_c5667bf11f8c8fccd17994d2a7978487b06a15cb"
+      }
+    },
+    "production": {
+      "autoIncrement": true
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
