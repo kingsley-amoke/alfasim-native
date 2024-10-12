@@ -64,3 +64,61 @@ export const CustomToast = (
     },
   });
 };
+
+export const socialLinks = {
+  instagram: {
+    link: "https://www.instagram.com/alfasimtelecom?igsh=MTBmMmlxbjd5ZjdpNg==",
+    color: "#F560e4",
+  },
+  facebook: {
+    link: "",
+    color: "blue",
+  },
+  whatsapp: {
+    link: "",
+    color: "green",
+  },
+  twitter: {
+    link: "",
+    color: "#000",
+  },
+  youtube: {
+    link: "",
+    color: "red",
+  },
+  chat: "https://whatsapp.com/+2348051525123",
+  email: "alfasimdata@gmail.com",
+};
+
+export const developerLinks = {
+  instagram: {
+    link: "",
+    color: "#F560e4",
+  },
+  facebook: {
+    link: "https://facebook.com/kingsley.chibuike.54/",
+    color: "blue",
+  },
+  whatsapp: {
+    link: "",
+    color: "green",
+  },
+  twitter: {
+    link: "",
+    color: "#000",
+  },
+  youtube: {
+    link: "",
+    color: "red",
+  },
+  linkedIn: {
+    link: "https://linkedin.com/in/kingsley-amoke",
+    color: "blue",
+  },
+  github: {
+    link: "https://github.com/kingsley-amoke",
+    color: "black",
+  },
+  website: "https://kingsleyamoke.com.ng/",
+  email: "klordbravo@gmail.com",
+};

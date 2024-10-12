@@ -857,3 +857,14 @@ export const fetchLastTransaction = async (reference: string) => {
     return;
   }
 };
+
+export const changePassword = async (newPassword: string) => {
+  try {
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+    return error;
+  } catch (error) {
+    console.log(error);
+  }
+};

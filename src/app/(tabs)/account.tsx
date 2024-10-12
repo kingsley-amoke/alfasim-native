@@ -13,6 +13,7 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "@/src/state/store";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ExternalLink } from "@/src/components/ExternalLink";
+import { developerLinks, socialLinks } from "@/src/utils/shared";
 
 const profile = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ const profile = () => {
       icon: "help-circle",
       text: "Help & Support",
       subtext: "Help or contact oyr cyustomer service",
-      action: "https://whatsapp.com/+2348051525123",
+      action: socialLinks.chat,
     },
   ];
 
@@ -76,8 +77,7 @@ const profile = () => {
     {
       icon: "instagram",
       text: "Instagram",
-      action:
-        "https://www.instagram.com/alfasimtelecom?igsh=MTBmMmlxbjd5ZjdpNg==",
+      action: socialLinks.instagram.link,
     },
   ];
 
@@ -85,23 +85,23 @@ const profile = () => {
     {
       icon: "link",
       text: "Portfolio",
-      action: "https://kingsleyamoke.com.ng/",
+      action: developerLinks.website,
     },
 
     {
       icon: "facebook-square",
       text: "Facebook",
-      action: "https://facebook.com/kingsley.chibuike.54/",
+      action: developerLinks.facebook.link,
     },
     {
       icon: "github",
       text: "GitHub",
-      action: "https://github.com/kingsley-amoke",
+      action: developerLinks.github.link,
     },
     {
       icon: "linkedin",
       text: "LinkedIn",
-      action: "https://linkedin.com/in/kingsley-amoke",
+      action: developerLinks.linkedIn.link,
     },
   ];
 

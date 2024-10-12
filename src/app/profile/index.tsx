@@ -5,29 +5,39 @@ import { Button, TextInput } from "react-native-paper";
 import { useUserStore } from "@/src/state/store";
 import { supabase } from "@/src/utils/supabase";
 import { CustomToast } from "@/src/utils/shared";
+import { changePassword } from "@/src/utils/data";
+import { useRouter } from "expo-router";
 
 const index = () => {
+  const router = useRouter();
+
   const [newPassword, setNewPassword] = useState("");
 
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChangePassword = async () => {
-    if (!newPassword) return;
+    setLoading(true);
+    if (!newPassword) {
+      setLoading(false);
+      return;
+    }
 
     if (newPassword !== confirmNewPassword) {
       setError("Password does not match");
       return;
     }
 
-    try {
-      const { data, error } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
-      error && CustomToast(error?.message, "red", "white");
-    } catch (error) {
-      console.log(error);
+    const res = await changePassword(newPassword);
+    if (res) {
+      CustomToast(res?.message, "red", "white");
+      setLoading(false);
+    } else {
+      CustomToast("Successful", Colors.light.primary, "white");
+      setLoading(false);
+      router.replace("/home");
     }
   };
 
@@ -70,10 +80,12 @@ const index = () => {
             alignItems: "center",
             gap: 10,
           }}
-          icon="check-circle-outline"
+          icon={loading ? "loading" : "check-circle-outline"}
           onPress={handleChangePassword}
         >
-          <Text style={{ fontSize: 20 }}>Update</Text>
+          <Text style={{ fontSize: 20 }}>
+            {loading ? "Please wait" : "Update"}
+          </Text>
         </Button>
       </View>
     </View>
