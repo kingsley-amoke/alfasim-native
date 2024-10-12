@@ -50,11 +50,14 @@ const profile = () => {
       subtext: "Switch app display mode to your preference",
       action: navigateToProfile,
     },
+  ];
+
+  const help = [
     {
       icon: "help-circle",
       text: "Help & Support",
       subtext: "Help or contact oyr cyustomer service",
-      action: navigateToSupport,
+      action: "https://whatsapp.com/+2348051525123",
     },
   ];
 
@@ -73,12 +76,8 @@ const profile = () => {
     {
       icon: "instagram",
       text: "Instagram",
-      action: "",
-    },
-    {
-      icon: "twitter",
-      text: "Twitter",
-      action: "",
+      action:
+        "https://www.instagram.com/alfasimtelecom?igsh=MTBmMmlxbjd5ZjdpNg==",
     },
   ];
 
@@ -177,7 +176,46 @@ const profile = () => {
               {renderSettingsItem(item)}
             </React.Fragment>
           ))}
+          {help.map((item, index) => (
+            <ExternalLink href={item.action} key={index}>
+              <TouchableOpacity
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  paddingVertical: 8,
+                  paddingLeft: 12,
+                  borderRadius: 12,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name={item.icon}
+                  size={40}
+                  color={color}
+                />
+                <View>
+                  <Text
+                    style={{
+                      marginLeft: 36,
+                      fontWeight: 600,
+                      fontSize: 20,
+                    }}
+                  >
+                    {item.text}{" "}
+                  </Text>
+                  <Text
+                    style={{
+                      marginLeft: 36,
+                      color: "grey",
+                    }}
+                  >
+                    {item.subtext}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ExternalLink>
+          ))}
         </View>
+
         <Text style={{ fontSize: 20, color: "grey", marginVertical: 10 }}>
           Follow Us
         </Text>
