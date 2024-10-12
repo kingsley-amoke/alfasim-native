@@ -14,8 +14,11 @@ import { useUserStore } from "@/src/state/store";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ExternalLink } from "@/src/components/ExternalLink";
 import { developerLinks, socialLinks } from "@/src/utils/shared";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const profile = () => {
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
+
   const router = useRouter();
 
   const colorScheme = useColorScheme();
@@ -27,9 +30,6 @@ const profile = () => {
   };
   const navigateToReferrals = () => {
     router.push("/referrals");
-  };
-  const navigateToSupport = () => {
-    router.push("htttps://whatsapp.com");
   };
 
   const settingItems = [
@@ -152,21 +152,28 @@ const profile = () => {
   );
 
   return (
-    <SafeAreaView>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
       <View
         style={{
           justifyContent: "center",
           alignItems: "center",
-          marginVertical: 50,
+          marginVertical: 10,
         }}
       >
         <Avatar.Icon size={70} icon="account-edit-outline" />
         <Text>{user.firstName}</Text>
       </View>
-      <ScrollView
-        style={{ marginHorizontal: 10, marginBottom: 200, paddingBottom: 50 }}
-        showsVerticalScrollIndicator={false}
-      >
+      <View style={{ marginHorizontal: 10, paddingBottom: 10 }}>
         <Text style={{ fontSize: 20, color: "grey", marginBottom: 10 }}>
           General Settings
         </Text>
@@ -274,8 +281,8 @@ const profile = () => {
             </ExternalLink>
           ))}
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 };
 

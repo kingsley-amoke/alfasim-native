@@ -5,9 +5,12 @@ import Transactions from "@/src/components/Transactions";
 
 import { useTransactionStore } from "@/src/state/store";
 import { Colors } from "@/src/constants/Colors";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const transactions = () => {
   const [value, setValue] = useState("all");
+
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
 
   const { transactions } = useTransactionStore();
 
@@ -61,6 +64,16 @@ const transactions = () => {
           </View>
         )}
       </ScrollView>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </SafeAreaView>
   );
 };

@@ -57,11 +57,6 @@ export default function RootLayout() {
   useEffect(() => {
     getPlans();
     getUsers();
-    mobileAds()
-      .initialize()
-      .then((adapterStatuses) => {
-        // Initialization complete!
-      });
   }, []);
 
   return (

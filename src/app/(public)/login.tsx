@@ -9,8 +9,11 @@ import useTheme from "@/src/hooks/useTheme";
 import { Colors } from "@/src/constants/Colors";
 import { CustomToast } from "@/src/utils/shared";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const login = () => {
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
+
   const router = useRouter();
 
   const colorScheme = useColorScheme();
@@ -109,6 +112,16 @@ const login = () => {
           </Link>
         </Text>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </View>
   );
 };

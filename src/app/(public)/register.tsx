@@ -13,8 +13,11 @@ import { useForm } from "react-hook-form";
 import { CustomToast } from "@/src/utils/shared";
 import { supabase } from "@/src/utils/supabase";
 import { createCustomer, handleReferral } from "@/src/utils/data";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const register = () => {
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
+
   const router = useRouter();
 
   const { colorScheme } = useTheme();
@@ -203,6 +206,16 @@ const register = () => {
           </Link>
         </Text>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </ScrollView>
   );
 };

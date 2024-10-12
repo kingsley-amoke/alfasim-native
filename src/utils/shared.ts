@@ -75,7 +75,7 @@ export const socialLinks = {
     color: "blue",
   },
   whatsapp: {
-    link: "",
+    link: "https://chat.whatsapp.com/ED3R1xRgcujC2T28KCdCQz",
     color: "green",
   },
   twitter: {
