@@ -51,7 +51,7 @@ export default function RootLayout() {
 
   const getUsers = async () => {
     const users = await fetchAllUsers();
-    storeUsers(users);
+    storeUsers(users!);
   };
 
   useEffect(() => {
