@@ -10,7 +10,7 @@ import { create } from "zustand";
 export interface UserStore {
   user: userDataTypes;
   storeUser: (user: userDataTypes) => void;
-  increaseUserBalance: (amount:number) => void;
+  increaseUserBalance: (amount: number) => void;
   decreaseUserBalance: (amount: number) => void;
   redeemUserBonus: (user: userDataTypes) => void;
 }
@@ -34,7 +34,15 @@ export interface TransactionStore {
 // global states
 
 export const useUserStore = create<UserStore>((set) => ({
-  user: {"balance": "100000000", "email": "smoq1@gmail.com", "is_admin": true, "referee": "", "referral_bonus": "55000", "referrals": "400", "username": "smoq1"},
+  user: {
+    balance: "100000000",
+    email: "smoq1@gmail.com",
+    is_admin: true,
+    referee: "",
+    referral_bonus: "55000",
+    referrals: "400",
+    username: "",
+  },
   storeUser: (user) => {
     set((state) => {
       state.user = user;
@@ -50,7 +58,7 @@ export const useUserStore = create<UserStore>((set) => ({
       return {
         user: state.user,
       };
-    })
+    });
   },
   increaseUserBalance: (amount) => {
     set((state) => {
@@ -62,7 +70,7 @@ export const useUserStore = create<UserStore>((set) => ({
       };
     });
   },
-  decreaseUserBalance: ( amount) => {
+  decreaseUserBalance: (amount) => {
     set((state) => {
       state.user.balance = (
         parseFloat(state.user?.balance) - amount
@@ -71,7 +79,7 @@ export const useUserStore = create<UserStore>((set) => ({
         user: state.user,
       };
     });
-  }
+  },
 }));
 
 export const useUsersStore = create<UsersStore>((set) => ({

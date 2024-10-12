@@ -1,5 +1,10 @@
-import { ScrollView, TouchableOpacity, useColorScheme, View } from "react-native";
-import { useState } from "react";
+import {
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
+import { useEffect, useState } from "react";
 import { Link, useRouter } from "expo-router";
 
 import { actions, CustomToast } from "@/src/utils/shared";
@@ -13,16 +18,32 @@ import {
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { redeemBonus } from "@/src/utils/data";
+import {
+  fetchLastTransaction,
+  fetchUserAccount,
+  getCustomerAccount,
+  postUserAccounts,
+  redeemBonus,
+} from "@/src/utils/data";
+
+interface AccountType {
+  accountName: string;
+  accountNumber: string;
+  bankCode: string;
+  bankName: string;
+}
 
 export default function home() {
   const router = useRouter();
 
-  const  colorScheme = useColorScheme();
+  const colorScheme = useColorScheme();
 
   const { user, redeemUserBonus, increaseUserBalance } = useUserStore();
 
   const [clickedRedeem, setClickedRedeem] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [accounts, setAccounts] = useState<AccountType[]>([]);
 
   const bgColor =
     colorScheme === "dark" ? Colors.dark.inversePrimary : Colors.light.primary;
@@ -39,6 +60,54 @@ export default function home() {
     style: "currency",
     currency: "NGN",
   }).format(parseFloat(user?.balance!));
+
+  const handleRequestAccount = async () => {
+    const contractCode = process.env
+      .EXPO_PUBLIC_MONNIFY_CONTRACT_CODE as string;
+    const bvn = process.env.EXPO_PUBLIC_BVN as string;
+
+    const config = {
+      accountReference: user.username,
+      accountName: "Alfasimdata Reserved Account",
+      currencyCode: "NGN",
+      contractCode: contractCode,
+      customerEmail: user?.email,
+      bvn: bvn,
+      customerName: user?.firstName + " " + user?.lastName,
+      getAllAvailableBanks: true,
+    };
+
+    setLoading(true);
+
+    const data = await getCustomerAccount(config);
+
+    if (!data) {
+      setLoading(false);
+      CustomToast(
+        "Failed to request account, please try again later",
+        "red",
+        "white"
+      );
+      return;
+    }
+
+    const userAccounts = {
+      account_name: data.accountName,
+      account_reference: data.accountReference,
+      accounts: data.accounts,
+      bvn: data.bvn,
+      currency: data.currencyCode,
+      customer_email: data.customerEmail,
+      customer_name: data.customerName,
+    };
+    postUserAccounts(userAccounts);
+    setLoading(false);
+    CustomToast(
+      "Account request submitted successfully",
+      Colors.light.primary,
+      "white"
+    );
+  };
 
   const handleRedeemBonus = async () => {
     setClickedRedeem(true);
@@ -70,6 +139,18 @@ export default function home() {
       setClickedRedeem(false);
     }
   };
+
+  const getAccounts = async () => {
+    fetchUserAccount(user?.email).then((data) => {
+      if (!data) return;
+      setAccounts(data[0].accounts);
+    });
+  };
+
+  useEffect(() => {
+    getAccounts();
+    user?.username && fetchLastTransaction(user?.username);
+  }, [user.username]);
 
   return (
     <ScrollView
@@ -106,11 +187,12 @@ export default function home() {
           >
             <Button
               mode="outlined"
-              icon="plus"
+              icon={loading ? "loading" : "bank-plus"}
+              disabled={loading}
               textColor={textColor}
-              onPress={() => router.push("/fund-wallet")}
+              onPress={handleRequestAccount}
             >
-              Fund Wallet
+              Request Account
             </Button>
             <Button
               mode="outlined"
@@ -123,6 +205,35 @@ export default function home() {
             </Button>
           </View>
         </View>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 10,
+        }}
+      >
+        {accounts.map((account) => (
+          <View
+            key={account.accountNumber}
+            style={{
+              width: "40%",
+              borderColor: "black",
+              borderWidth: 1,
+              marginVertical: 10,
+              borderRadius: 10,
+              paddingHorizontal: 20,
+              paddingVertical: 10,
+            }}
+          >
+            <Text style={{ fontSize: 20 }}>{account.bankName}</Text>
+            <Text style={{ fontWeight: "bold", marginTop: 5, fontSize: 16 }}>
+              {account.accountNumber}
+            </Text>
+          </View>
+        ))}
       </View>
       <View
         style={{
@@ -145,7 +256,7 @@ export default function home() {
             width: "40%",
           }}
         >
-          <FontAwesome6 name="person-circle-check" size={30} color="teal" />
+          <MaterialCommunityIcons name="account-group" size={30} color="teal" />
           <View>
             <Text>Referals</Text>
             <Text

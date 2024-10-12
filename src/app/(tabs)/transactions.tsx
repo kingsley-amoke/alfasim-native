@@ -4,20 +4,27 @@ import { SegmentedButtons } from "react-native-paper";
 import Transactions from "@/src/components/Transactions";
 
 import { useTransactionStore } from "@/src/state/store";
+import { Colors } from "@/src/constants/Colors";
 
 const transactions = () => {
   const [value, setValue] = useState("all");
-  
-  const {transactions} = useTransactionStore();
 
-  const data = transactions.filter((item) => item.purpose === 'data');
-  const airtime = transactions.filter((item) => item.purpose === 'airtime');
-  const recharge = transactions.filter((item) => item.purpose === 'wallet');
+  const { transactions } = useTransactionStore();
+
+  const data = transactions.filter((item) => item.purpose === "data");
+  const airtime = transactions.filter((item) => item.purpose === "airtime");
+  const recharge = transactions.filter((item) => item.purpose === "wallet");
 
   return (
     <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
       <SegmentedButtons
         value={value}
+        theme={{
+          colors: {
+            secondaryContainer: Colors.light.primary,
+            onSecondaryContainer: "white",
+          },
+        }}
         onValueChange={setValue}
         buttons={[
           {
@@ -37,20 +44,20 @@ const transactions = () => {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         {value === "all" ? (
-          <View style={{paddingHorizontal:10}}>
-            <Transactions items={transactions}/>
+          <View style={{ paddingHorizontal: 10 }}>
+            <Transactions items={transactions} />
           </View>
         ) : value === "data" ? (
           <View>
-            <Transactions items={data}/>
+            <Transactions items={data} />
           </View>
         ) : value === "airtime" ? (
           <View>
-            <Transactions items={airtime}/>
+            <Transactions items={airtime} />
           </View>
         ) : (
           <View>
-            <Transactions items={recharge}/>
+            <Transactions items={recharge} />
           </View>
         )}
       </ScrollView>

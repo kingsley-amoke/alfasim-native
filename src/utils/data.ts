@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import {
+  AccountType,
   DBTransactionTypes,
   PaystackParams,
   VerifyParams,
@@ -10,6 +11,13 @@ import {
   userDataTypes,
 } from "./types";
 import { supabase } from "./supabase";
+
+const monnifyUrl = process.env.EXPO_PUBLIC_MONNIFY_BASEURL as string;
+
+const monnifyApiKey = process.env.EXPO_PUBLIC_MONNIFY_APIKEY as string;
+
+const monnifySecretKey = process.env.EXPO_PUBLIC_MONNIFY_SECRETKEY as string;
+const monnifyEncodedKey = btoa(monnifyApiKey + ":" + monnifySecretKey);
 
 //fetch all users
 
@@ -710,4 +718,142 @@ export const handleFundWallet = async (
   if (refs?.length > 0) return;
 
   verifyPayment(user, reference);
+};
+
+//monnify authorization
+
+const options = {
+  method: "POST",
+  headers: {
+    Authorization: `Basic ${monnifyEncodedKey}`,
+  },
+};
+
+//generate authorization token
+
+async function getToken() {
+  const response = await fetch(`${monnifyUrl}/api/v1/auth/login`, options);
+
+  const data = await response.json();
+  const token = data.responseBody?.accessToken;
+
+  return token;
+}
+
+//generate reserved account information
+
+export async function getCustomerAccount(config: any) {
+  const token = await getToken();
+
+  if (!token) {
+    throw new Error("Failed to get access token");
+  }
+
+  const response = await fetch(
+    `${monnifyUrl}/api/v2/bank-transfer/reserved-accounts`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(config),
+    }
+  );
+
+  const data = await response.json();
+  // console.log(data)
+
+  return data.requestSuccessful ? data.responseBody : null;
+}
+
+//fetch user reserved accounts
+export const fetchUserAccount = async (email: string) => {
+  try {
+    const { data } = await supabase
+      .from("accounts")
+      .select()
+      .eq("customer_email", email);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    console.log(error);
+  }
+};
+
+//post useraccount
+export const postUserAccounts = async (accountInfo: AccountType) => {
+  try {
+    const { data, error } = await supabase
+      .from("accounts")
+      .insert([accountInfo])
+      .select();
+
+    console.log(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//fetch reserved account transactions
+const fetchDeposit = async (reference: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("deposits")
+      .select()
+      .eq("reference", reference);
+
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateDeposits = async (reference: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("deposits")
+      .insert([{ reference }])
+      .select();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchLastTransaction = async (reference: string) => {
+  const token = await getToken();
+
+  if (!token) {
+    throw new Error("Failed to get access token");
+  }
+
+  const response = await fetch(
+    `${monnifyUrl}/api/v1/bank-transfer/reserved-accounts/transactions?accountReference=${reference}&page=0&size=1`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await response.json();
+
+  if (data.requestSuccessful) {
+    const amount = data.responseBody.content[0].amount;
+    const trxRef = data.responseBody.content[0].transactionReference;
+    const res = await fetchDeposit(trxRef);
+    if (!res || res?.length < 1) {
+      recharge(`${reference}@gmail.com`, amount);
+      updateDeposits(trxRef);
+      return;
+    } else {
+      console.log("we got some record");
+      return;
+    }
+  } else {
+    return;
+  }
 };

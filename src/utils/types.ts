@@ -1,5 +1,3 @@
-
-
 export interface userDataTypes {
   email: string;
   firstName?: string;
@@ -9,7 +7,7 @@ export interface userDataTypes {
   balance: string;
   referrals?: string;
   referral_bonus: string;
-  referee:string | null;
+  referee: string | null;
   is_admin: boolean;
 }
 
@@ -100,25 +98,25 @@ export interface transactionTypes {
   transactionId?: string;
 }
 
-export interface DBTransactionTypes{
-  created_at: string
-  email: string
-  purpose: string
-  amount: string
-  id: string
-  status: string
-  network: string
-  plan_size: string
-  previous_balance: string
-  new_balance: string
-  phone: string
-  transaction_id: string
+export interface DBTransactionTypes {
+  created_at: string;
+  email: string;
+  purpose: string;
+  amount: string;
+  id: string;
+  status: string;
+  network: string;
+  plan_size: string;
+  previous_balance: string;
+  new_balance: string;
+  phone: string;
+  transaction_id: string;
 }
 
-export interface refsTypes{
-  id: number,
-  created_at: string,
-  ref: string
+export interface refsTypes {
+  id: number;
+  created_at: string;
+  ref: string;
 }
 
 export interface PaystackParams {
@@ -143,15 +141,26 @@ export interface PageProps {
 
 export type alertPropsTypes = {
   buttonProps: {
-    title:string,
-    loading: boolean
-      onClick?: () => void,
-      
-  },
+    title: string;
+    loading: boolean;
+    onClick?: () => void;
+  };
   headerProps: {
-      title: string,
-      description: string,
-  },
-  onCancel: () => void,
-  onConfirm: () => void,
-  }
+    title: string;
+    description: string;
+  };
+  onCancel: () => void;
+  onConfirm: () => void;
+};
+
+//account db types
+
+export type AccountType = {
+  account_reference: string;
+  account_name: string;
+  customer_email: string;
+  customer_name: string;
+  currency: string;
+  accounts: Array<any>;
+  bvn: string;
+};

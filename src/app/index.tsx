@@ -12,20 +12,24 @@ const index = () => {
   const { storeUser } = useUserStore();
 
   const getUser = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      router.replace("/login");
-    } else {
-      fetchUser(user?.email).then(async (user) => {
-        storeUser(user![0]);
-        const transactions = await fetchTransactions(user![0].email);
-        storeTransactions(transactions!);
-        router.replace("/home");
+    supabase.auth
+      .getUser()
+      .then(({ data: { user } }) => {
+        if (user) {
+          fetchUser(user?.email).then(async (user) => {
+            storeUser(user![0]);
+            const transactions = await fetchTransactions(user![0].email);
+            storeTransactions(transactions!);
+            router.replace("/home");
+          });
+        } else {
+          router.replace("/login");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        return;
       });
-    }
   };
   useEffect(() => {
     getUser();
