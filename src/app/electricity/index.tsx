@@ -2,15 +2,23 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 import React, { useState } from "react";
 import { useUserStore } from "@/src/state/store";
 import { alertPropsTypes } from "@/src/utils/types";
-import { Button, Dialog, Divider, Portal, Text, TextInput } from "react-native-paper";
+import {
+  Button,
+  Dialog,
+  Divider,
+  Portal,
+  Text,
+  TextInput,
+} from "react-native-paper";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { MaterialIcons } from "@expo/vector-icons";
 import useTheme from "@/src/hooks/useTheme";
 import { Colors } from "@/src/constants/Colors";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const index = () => {
   const { user } = useUserStore();
-
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
 
   const { colorScheme } = useTheme();
 
@@ -30,7 +38,7 @@ const index = () => {
 
   const hideDialog = () => setVisible(false);
 
-  const [provider, setProvider] = useState('------')
+  const [provider, setProvider] = useState("------");
   const [meterType, setMeterType] = useState("------");
   const [meterNumber, setMeterNumber] = useState("");
 
@@ -66,8 +74,6 @@ const index = () => {
     }
   };
 
-
-
   const handleSubmitForm = async () => {
     const dataInfo = {
       disco_name: "disco",
@@ -79,17 +85,18 @@ const index = () => {
     console.log(dataInfo);
   };
 
-
   return (
     <SafeAreaView style={{ flex: 1, marginVertical: 10 }}>
-      <View   style={{
+      <View
+        style={{
           borderRadius: 10,
           marginHorizontal: 10,
           marginVertical: 20,
           padding: 10,
           borderWidth: 1,
           borderColor: bgColor,
-        }}>
+        }}
+      >
         <Text>Provider*</Text>
         <SectionedMultiSelect
           IconRenderer={MaterialIcons}
@@ -99,7 +106,7 @@ const index = () => {
           selectText={provider}
           onSelectedItemsChange={(value) => setProvider(value[0])}
         />
-<Divider bold horizontalInset style={{ marginBottom: 30 }} />
+        <Divider bold horizontalInset style={{ marginBottom: 30 }} />
         <Text>Meter Typer*</Text>
         <SectionedMultiSelect
           IconRenderer={MaterialIcons}
@@ -109,12 +116,11 @@ const index = () => {
           single
           onSelectedItemsChange={(value) => setMeterType(value[0])}
         />
-<Divider bold horizontalInset style={{ marginBottom: 30 }} />
+        <Divider bold horizontalInset style={{ marginBottom: 30 }} />
         <Text>Meter Number*</Text>
         <TextInput
           label="Meter Number*"
           keyboardType="numeric"
-         
           mode="outlined"
           onChangeText={(value) => setMeterNumber(value)}
         />
@@ -123,14 +129,13 @@ const index = () => {
         <TextInput
           label="Amount (NGN)*"
           keyboardType="numeric"
-          
           mode="outlined"
           onChangeText={(value) => {
             handleAmount(value);
           }}
         />
         <Divider bold horizontalInset style={{ marginBottom: 30 }} />
-        
+
         <TextInput
           label="Amount To Pay"
           keyboardType="numeric"
@@ -144,7 +149,9 @@ const index = () => {
           onPress={showDialog}
           disabled={loading ? true : false}
         >
-          <Text style={{color:'#fff'}}>{loading ? "Submitting" : "Pay"}</Text>
+          <Text style={{ color: "#fff" }}>
+            {loading ? "Submitting" : "Pay"}
+          </Text>
         </Button>
       </View>
       <View>
@@ -167,6 +174,16 @@ const index = () => {
           </Dialog>
         </Portal>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </SafeAreaView>
   );
 };

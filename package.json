@@ -50,7 +50,8 @@
     "react-native-webview": "13.8.6",
     "zod": "^3.23.8",
     "zustand": "^4.5.4",
-    "expo-build-properties": "~0.12.5"
+    "expo-build-properties": "~0.12.5",
+    "expo-image": "~1.13.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

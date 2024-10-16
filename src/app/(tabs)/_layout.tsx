@@ -3,6 +3,8 @@ import React, { useEffect } from "react";
 import { Redirect, Tabs, useRouter } from "expo-router";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "@/src/utils/supabase";
+import { Avatar } from "react-native-paper";
+import images from "@/images";
 
 const TabLayout = () => {
   const router = useRouter();
@@ -40,6 +42,12 @@ const TabLayout = () => {
                   onPress={logout}
                 />
               </TouchableOpacity>
+            ),
+            headerLeft: () => (
+              <Avatar.Image
+                source={images.icon}
+                style={{ paddingLeft: 2, marginLeft: 5 }}
+              />
             ),
           }}
         />

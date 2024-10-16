@@ -16,8 +16,11 @@ import {
 import { Button, Dialog, Divider, Portal, TextInput } from "react-native-paper";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { MaterialIcons } from "@expo/vector-icons";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const Airtime = () => {
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
+
   const router = useRouter();
 
   const { user, storeUser } = useUserStore();
@@ -60,7 +63,7 @@ const Airtime = () => {
   const handleAmount = (value: string) => {
     if (value !== "") {
       const discount = (2 / 100) * parseInt(value);
-      let pay = (parseInt(value) - discount);
+      let pay = parseInt(value) - discount;
       setAmount(value);
       setAmountToPay(pay);
     }
@@ -148,7 +151,7 @@ const Airtime = () => {
         newBalance: (parseInt(user.balance) - amountToPay).toString(),
       };
 
-      handleBuyAirtime(data).then(async() => {
+      handleBuyAirtime(data).then(async () => {
         const user = await fetchUser(data.email);
         storeUser(user![0]);
         router.push("/");
@@ -165,9 +168,7 @@ const Airtime = () => {
           network: networkName,
           planSize: amount,
           previousBalance: user.balance,
-          newBalance: (
-            parseInt(user.balance) - amountToPay
-          ).toString(),
+          newBalance: (parseInt(user.balance) - amountToPay).toString(),
         };
         CustomToast(response.Status, errorToastBg, errorToastText);
         setLoading(false);
@@ -242,26 +243,26 @@ const Airtime = () => {
         <TextInput
           mode="outlined"
           label="Amount"
-          
           onChangeText={(value) => handleAmount(value)}
         />
         <Divider bold horizontalInset style={{ marginBottom: 30 }} />
-       
+
         <TextInput
           mode="outlined"
           keyboardType="numeric"
           label="Amount To Pay"
           value={amountToPay.toString()}
           disabled
-          
         />
         <Button
           mode="contained"
-          style={{ marginVertical: 20 }}
+          style={{ marginVertical: 20, paddingVertical: 10 }}
           onPress={showDialog}
           disabled={loading ? true : false}
         >
-          <Text>{loading ? "Submitting" : "Buy Airtime"}</Text>
+          <Text style={{ fontSize: 20 }}>
+            {loading ? "Submitting" : "Buy Airtime"}
+          </Text>
         </Button>
       </View>
       <View>
@@ -273,11 +274,11 @@ const Airtime = () => {
             </Dialog.Content>
             <Dialog.Actions>
               <Button
-              
                 onPress={() => {
                   handleSubmitForm();
                   hideDialog();
                 }}
+                labelStyle={{ fontSize: 20 }}
               >
                 Continue
               </Button>
@@ -285,6 +286,16 @@ const Airtime = () => {
           </Dialog>
         </Portal>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </ScrollView>
   );
 };

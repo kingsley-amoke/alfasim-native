@@ -16,12 +16,15 @@ import { Button, Dialog, Divider, Portal, TextInput } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { CustomToast } from "@/src/utils/shared";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const index = () => {
   interface DataType {
     id: number;
     type: string;
   }
+
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
 
   const router = useRouter();
 
@@ -35,10 +38,10 @@ const index = () => {
   const textColor =
     colorScheme == "dark" ? Colors.dark.onBackground : Colors.light.onPrimary;
 
-
-    const errorToastBg =  colorScheme === "dark" ? Colors.dark.error : Colors.light.error;
-    const errorToastText = colorScheme === "dark" ? Colors.dark.onError : Colors.light.onError;
-
+  const errorToastBg =
+    colorScheme === "dark" ? Colors.dark.error : Colors.light.error;
+  const errorToastText =
+    colorScheme === "dark" ? Colors.dark.onError : Colors.light.onError;
 
   const [visible, setVisible] = useState(false);
 
@@ -103,14 +106,6 @@ const index = () => {
       id: 4,
       type: "CORPORATE GIFTING",
     },
-    {
-      id: 5,
-      type: "CORPORATE GIFTING2",
-    },
-    {
-      id: 6,
-      type: "DATA COUPONS",
-    },
   ];
   const gloDataTypes = [
     {
@@ -154,7 +149,7 @@ const index = () => {
   const mtnSME = mtnPlans.filter((plan) => plan.plan_type === "SME");
   const alfasimMtnSME: Plan[] = [];
 
-  const unitGBSME = 260 + 5;
+  const unitGBSME = 270;
 
   mtnSME.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -176,7 +171,7 @@ const index = () => {
   const mtnSME2 = mtnPlans.filter((plan) => plan.plan_type === "SME2");
   const alfasimMtnSME2: Plan[] = [];
 
-  const unitGBSME2 = 260 + 5;
+  const unitGBSME2 = 265;
 
   mtnSME2.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -200,7 +195,7 @@ const index = () => {
 
   const alfasimMtnGifting: Plan[] = [];
 
-  const unitGBGifting = 575 + 5;
+  const unitGBGifting = 260;
 
   mtnGifting.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -232,7 +227,7 @@ const index = () => {
 
   const alfasimMtnCorporateGifting: Plan[] = [];
 
-  const unitGBCorporateGifting = 265 + 5;
+  const unitGBCorporateGifting = 270;
 
   mtnCorporateGifting.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -555,7 +550,6 @@ const index = () => {
     }
   };
 
-
   const handleSubmitForm = async () => {
     if (!selectedPlan || !user) return;
 
@@ -563,7 +557,6 @@ const index = () => {
       parseInt(user?.balance) < parseInt(selectedPlan?.plan_amount) ||
       !user.balance
     ) {
-
       CustomToast("Insufficient Balance", errorToastBg, errorToastText);
       return;
     }
@@ -598,7 +591,11 @@ const index = () => {
       };
 
       setTransaction(data);
-      CustomToast("Network error, Try again later", errorToastBg, errorToastText);
+      CustomToast(
+        "Network error, Try again later",
+        errorToastBg,
+        errorToastText
+      );
       setLoading(false);
       return;
     }
@@ -630,7 +627,7 @@ const index = () => {
         commission,
         user?.referee,
         user?.referral_bonus!
-      ).then(async() => {
+      ).then(async () => {
         const user = await fetchUser(data.email);
         storeUser(user![0]);
         router.push("/");
@@ -784,11 +781,13 @@ const index = () => {
         />
         <Button
           mode="outlined"
-          style={{ marginVertical: 20 }}
+          style={{ marginVertical: 20, paddingVertical: 10 }}
           onPress={showDialog}
           disabled={loading ? true : false}
         >
-          <Text>{loading ? "Submitting" : "Buy Data"}</Text>
+          <Text style={{ fontSize: 20 }}>
+            {loading ? "Submitting" : "Buy Data"}
+          </Text>
         </Button>
       </View>
       <View>
@@ -796,9 +795,7 @@ const index = () => {
           <Dialog visible={visible} onDismiss={hideDialog}>
             <Dialog.Title>Confirm</Dialog.Title>
             <Dialog.Content>
-              <Text>
-                Are you sure you want to continue?
-              </Text>
+              <Text>Are you sure you want to continue?</Text>
             </Dialog.Content>
             <Dialog.Actions>
               <Button
@@ -806,6 +803,7 @@ const index = () => {
                   handleSubmitForm();
                   hideDialog();
                 }}
+                labelStyle={{ fontSize: 20 }}
               >
                 Continue
               </Button>
@@ -813,6 +811,16 @@ const index = () => {
           </Dialog>
         </Portal>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </ScrollView>
   );
 };

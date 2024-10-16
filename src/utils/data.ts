@@ -172,7 +172,7 @@ export const getLoggedUser = async () => {
 export const handleCommission = async (
   user: transactionTypes,
   commission: number,
-  referee: string,
+  referee: string | null,
   referral_bonus: string
 ) => {
   try {
@@ -691,7 +691,7 @@ export const verifyPayment = async (user: userDataTypes, reference: string) => {
 export const handleBuyData = async (
   data: transactionTypes,
   commission: number,
-  referee: string,
+  referee: string | null,
   referral_bonus: string
 ) => {
   deductBalance(data);

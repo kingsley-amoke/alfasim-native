@@ -13,8 +13,9 @@ import { useRouter } from "expo-router";
 import { useUserStore } from "@/src/state/store";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 import { ExternalLink } from "@/src/components/ExternalLink";
-import { developerLinks, socialLinks } from "@/src/utils/shared";
+import { CustomToast, developerLinks, socialLinks } from "@/src/utils/shared";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { Colors } from "@/src/constants/Colors";
 
 const profile = () => {
   const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
@@ -30,6 +31,10 @@ const profile = () => {
   };
   const navigateToReferrals = () => {
     router.push("/referrals");
+  };
+
+  const toggleMode = () => {
+    CustomToast("Coming soon...", Colors.light.primary, "white");
   };
 
   const settingItems = [
@@ -48,8 +53,8 @@ const profile = () => {
     {
       icon: "theme-light-dark",
       text: "Dark Mode",
-      subtext: "Switch app display mode to your preference",
-      action: navigateToProfile,
+      subtext: "Switch app display mode",
+      action: toggleMode,
     },
   ];
 
@@ -57,7 +62,7 @@ const profile = () => {
     {
       icon: "help-circle",
       text: "Help & Support",
-      subtext: "Help or contact oyr cyustomer service",
+      subtext: "Help or contact our cyustomer service",
       action: socialLinks.chat,
     },
   ];
@@ -66,13 +71,13 @@ const profile = () => {
     {
       icon: "whatsapp",
       text: "Whatsapp Channel",
-      action: "",
+      action: socialLinks.whatsapp.link,
     },
 
     {
       icon: "facebook-square",
       text: "Facebook",
-      action: "",
+      action: socialLinks.facebook.link,
     },
     {
       icon: "instagram",
@@ -128,13 +133,13 @@ const profile = () => {
         borderRadius: 12,
       }}
     >
-      <MaterialCommunityIcons name={icon} size={40} color={color} />
+      <MaterialCommunityIcons name={icon} size={30} color={color} />
       <View>
         <Text
           style={{
             marginLeft: 36,
             fontWeight: 600,
-            fontSize: 20,
+            fontSize: 18,
           }}
         >
           {text}
@@ -196,7 +201,7 @@ const profile = () => {
               >
                 <MaterialCommunityIcons
                   name={item.icon}
-                  size={40}
+                  size={30}
                   color={color}
                 />
                 <View>
@@ -204,7 +209,7 @@ const profile = () => {
                     style={{
                       marginLeft: 36,
                       fontWeight: 600,
-                      fontSize: 20,
+                      fontSize: 18,
                     }}
                   >
                     {item.text}{" "}
@@ -238,12 +243,12 @@ const profile = () => {
                   borderRadius: 12,
                 }}
               >
-                <FontAwesome name={item.icon} size={40} color={color} />
+                <FontAwesome name={item.icon} size={30} color={color} />
                 <Text
                   style={{
                     marginLeft: 36,
                     fontWeight: 600,
-                    fontSize: 20,
+                    fontSize: 18,
                   }}
                 >
                   {item.text}{" "}
@@ -267,12 +272,12 @@ const profile = () => {
                   borderRadius: 12,
                 }}
               >
-                <FontAwesome name={item.icon} size={40} color={color} />
+                <FontAwesome name={item.icon} size={30} color={color} />
                 <Text
                   style={{
                     marginLeft: 36,
                     fontWeight: 600,
-                    fontSize: 20,
+                    fontSize: 18,
                   }}
                 >
                   {item.text}{" "}

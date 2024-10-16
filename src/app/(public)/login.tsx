@@ -100,7 +100,8 @@ const login = () => {
       >
         <Button
           mode="contained"
-          style={{ width: "100%" }}
+          style={{ width: "100%", paddingVertical: 10 }}
+          labelStyle={{ fontSize: 20 }}
           onPress={handleLogin}
         >
           {loading ? "Please wait..." : "Sign In"}

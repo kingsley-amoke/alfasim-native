@@ -194,6 +194,7 @@ const register = () => {
           style={{
             width: "100%",
           }}
+          labelStyle={{ fontSize: 20 }}
           mode="contained"
           onPress={handleSubmit(onSubmit)}
         >

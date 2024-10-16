@@ -7,7 +7,7 @@ const index = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ marginVertical: 20 }}>Comming soon ...</Text>
+      <Text style={{ marginVertical: 20 }}>Coming soon ...</Text>
       <BannerAd
         unitId={liveBanner}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}

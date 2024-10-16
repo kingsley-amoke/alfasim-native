@@ -29,19 +29,23 @@ const transactions = () => {
           },
         }}
         onValueChange={setValue}
+        density="regular"
+        style={{ height: 50 }}
         buttons={[
           {
             value: "all",
             label: "All",
+            labelStyle: { fontSize: 20, marginTop: 8 },
           },
           {
             value: "data",
             label: "Data",
+            labelStyle: { fontSize: 20, marginTop: 8 },
           },
-          { value: "airtime", label: "Airtime" },
           {
-            value: "recharge",
-            label: "Deposit",
+            value: "airtime",
+            label: "Airtime",
+            labelStyle: { fontSize: 20, marginTop: 8 },
           },
         ]}
       />

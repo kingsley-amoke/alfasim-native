@@ -14,8 +14,10 @@ import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { MaterialIcons } from "@expo/vector-icons";
 import useTheme from "@/src/hooks/useTheme";
 import { Colors } from "@/src/constants/Colors";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const index = () => {
+  const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
   const { user } = useUserStore();
 
   const { colorScheme } = useTheme();
@@ -143,7 +145,7 @@ const index = () => {
           single
           uniqueKey="name"
           onSelectedItemsChange={(value) => {
-            handleProviderSelect(value[0])
+            handleProviderSelect(value[0]);
             setNetwork(value[0]);
           }}
         />
@@ -181,11 +183,11 @@ const index = () => {
         />
         <Button
           mode="contained"
-          style={{ marginVertical: 20 }}
+          style={{ marginVertical: 20, paddingVertical: 10 }}
           onPress={showDialog}
           disabled={loading ? true : false}
         >
-          <Text style={{ color: "#fff" }}>
+          <Text style={{ color: "#fff", fontSize: 20 }}>
             {loading ? "Submitting" : "Pay"}
           </Text>
         </Button>
@@ -210,6 +212,16 @@ const index = () => {
           </Dialog>
         </Portal>
       </View>
+      <BannerAd
+        unitId={liveBanner}
+        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        requestOptions={{
+          requestNonPersonalizedAdsOnly: true,
+          networkExtras: {
+            collapsible: "bottom",
+          },
+        }}
+      />
     </SafeAreaView>
   );
 };

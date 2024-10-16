@@ -60,13 +60,13 @@ const index = () => {
 
         <TextInput
           label="New Password"
-          style={{ width: 300 }}
+          style={{ width: "90%" }}
           onChangeText={(text) => setNewPassword(text)}
         />
         {error && <Text style={{ color: "red", fontSize: 18 }}>{error}</Text>}
         <TextInput
           label="New Password"
-          style={{ width: 300 }}
+          style={{ width: "90%" }}
           onChangeText={(text) => setConfirmNewPassword(text)}
         />
         <Button
@@ -75,17 +75,16 @@ const index = () => {
             borderColor: Colors.light.primary,
             borderRadius: 10,
             paddingVertical: 10,
-            paddingHorizontal: 10,
+            paddingHorizontal: 20,
             marginTop: 10,
             alignItems: "center",
             gap: 10,
           }}
+          labelStyle={{ fontSize: 22 }}
           icon={loading ? "loading" : "check-circle-outline"}
           onPress={handleChangePassword}
         >
-          <Text style={{ fontSize: 20 }}>
-            {loading ? "Please wait" : "Update"}
-          </Text>
+          <Text>{loading ? "Please wait" : "Update"}</Text>
         </Button>
       </View>
     </View>

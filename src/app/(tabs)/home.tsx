@@ -188,6 +188,8 @@ export default function home() {
             <Button
               mode="outlined"
               icon={loading ? "loading" : "bank-plus"}
+              style={{ paddingVertical: 10 }}
+              labelStyle={{ fontSize: 18 }}
               disabled={loading}
               textColor={textColor}
               onPress={handleRequestAccount}
@@ -197,6 +199,8 @@ export default function home() {
             <Button
               mode="outlined"
               icon="plus"
+              style={{ paddingVertical: 10 }}
+              labelStyle={{ fontSize: 18 }}
               textColor={textColor}
               onPress={handleRedeemBonus}
               disabled={clickedRedeem}
@@ -219,7 +223,7 @@ export default function home() {
           <View
             key={account.accountNumber}
             style={{
-              width: "40%",
+              width: "45%",
               borderColor: "black",
               borderWidth: 1,
               marginVertical: 10,
