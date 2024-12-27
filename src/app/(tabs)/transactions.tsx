@@ -113,7 +113,7 @@ const transactions = () => {
         <UIActivityIndicator color={Colors.light.primary} />
       )}
       <BannerAd
-        unitId={TestIds.ADAPTIVE_BANNER}
+        unitId={liveBanner}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
