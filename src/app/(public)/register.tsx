@@ -12,7 +12,7 @@ import ValidatedInput from "@/src/components/ValidatedInput";
 import { useForm } from "react-hook-form";
 import { CustomToast } from "@/src/utils/shared";
 import { supabase } from "@/src/utils/supabase";
-import { createCustomer, handleReferral } from "@/src/utils/data";
+import { handleReferral } from "@/src/utils/data";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const register = () => {
@@ -20,17 +20,17 @@ const register = () => {
 
   const router = useRouter();
 
-  const { colorScheme } = useTheme();
-  const { storeUser } = useUserStore();
+  // const { colorScheme } = useTheme();
+  // const { storeUser } = useUserStore();
 
   const [loading, setLoading] = useState(false);
 
-  const bgColor =
-    colorScheme == " dark" ? Colors.dark.primary : Colors.light.primary;
-  const textColor =
-    colorScheme == "dark" ? Colors.dark.surface : Colors.light.surface;
-  const errorColor =
-    colorScheme == "dark" ? Colors.dark.error : Colors.light.error;
+  // const bgColor =
+  //   colorScheme == " dark" ? Colors.dark.primary : Colors.light.primary;
+  // const textColor =
+  //   colorScheme == "dark" ? Colors.dark.surface : Colors.light.surface;
+  // const errorColor =
+  //   colorScheme == "dark" ? Colors.dark.error : Colors.light.error;
 
   const formSchema = z
     .object({
@@ -84,7 +84,7 @@ const register = () => {
     } = await supabase.auth.signUp(credentials);
 
     if (error) {
-      CustomToast(error.message, errorColor, textColor);
+      CustomToast(error.message, Colors.light.onError, Colors.light.error);
       setLoading(false);
       return;
     }
@@ -105,28 +105,24 @@ const register = () => {
     supabase
       .from("users")
       .insert([newUser])
-      .select()
       .then(() => {
-        const localUser = {
-          email: newUser.email,
-          username: newUser.username,
-          balance: "0",
-          referrals: "0",
-          referee: newUser.referee,
-          referral_bonus: "0",
-          is_admin: false,
-        };
         if (data.referee) {
-          CustomToast("Registration Successful", textColor, bgColor);
-          storeUser(localUser);
-          router.replace("/home");
+          CustomToast(
+            "Registration Successful",
+            Colors.light.onError,
+            Colors.light.error
+          );
+          router.replace("/");
 
           handleReferral(data.referee, data.email);
           setLoading(false);
         } else {
-          CustomToast("Registration Successful", textColor, bgColor);
-          storeUser(localUser);
-          router.replace("/home");
+          CustomToast(
+            "Registration Successful",
+            Colors.light.onError,
+            Colors.light.error
+          );
+          router.replace("/");
           setLoading(false);
         }
       });
@@ -139,10 +135,10 @@ const register = () => {
           fontWeight: "bold",
           fontSize: 22,
           marginVertical: 20,
-          textAlign: "center",
+          marginLeft: 20,
         }}
       >
-        Register
+        Register Now
       </Text>
       <View style={{ width: "100%", paddingHorizontal: 20 }}>
         <View style={{ gap: 20 }}>
@@ -193,16 +189,23 @@ const register = () => {
         <Button
           style={{
             width: "100%",
+            paddingVertical: 10,
+            backgroundColor: loading ? "white" : Colors.primary,
           }}
           labelStyle={{ fontSize: 20 }}
           mode="contained"
           onPress={handleSubmit(onSubmit)}
+          loading={loading}
+          disabled={loading}
         >
           {loading ? "Please wait..." : "Register"}
         </Button>
-        <Text style={{ marginVertical: 10 }}>
+        <Text style={{ marginVertical: 16 }}>
           Already a member?{" "}
-          <Link href={"/login"} style={{ color: bgColor, marginLeft: 10 }}>
+          <Link
+            href={"/login"}
+            style={{ color: Colors.light.primary, marginLeft: 16 }}
+          >
             Login
           </Link>
         </Text>

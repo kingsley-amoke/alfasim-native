@@ -1,47 +1,42 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import { View } from "react-native";
+import React, { useMemo } from "react";
 import { supabase } from "@/src/utils/supabase";
-import { fetchTransactions, fetchUser } from "../utils/data";
-import { useTransactionStore, useUserStore } from "../state/store";
+import { fetchAllUsers } from "../utils/data";
+import { useUsersStore } from "../state/store";
 import { useRouter } from "expo-router";
-import { ActivityIndicator } from "react-native-paper";
+import { UIActivityIndicator } from "react-native-indicators";
+import { CustomToast } from "../utils/shared";
+import { Colors } from "../constants/Colors";
 
 const index = () => {
   const router = useRouter();
-  const { storeTransactions } = useTransactionStore();
-  const { storeUser } = useUserStore();
+  const { storeUsers } = useUsersStore();
 
-  const getUser = async () => {
-    supabase.auth
-      .getUser()
-      .then(({ data: { user } }) => {
-        if (user) {
-          fetchUser(user?.email).then(async (user) => {
-            storeUser(user![0]);
-            const transactions = await fetchTransactions(user![0].email);
-            storeTransactions(transactions!);
-            router.replace("/home");
-          });
-        } else {
-          router.replace("/login");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        return;
-      });
-  };
-  useEffect(() => {
-    getUser();
-  });
+  fetchAllUsers().then((users) => storeUsers(users!));
+
+  supabase.auth
+    .getUser()
+    .then(({ data: { user } }) => {
+      if (!user) {
+        router.replace("/login");
+      } else {
+        router.replace("/home");
+      }
+    })
+    .catch((error) => {
+      CustomToast(
+        "Please login to continue",
+        Colors.light.error,
+        Colors.light.onError
+      );
+      router.replace("/login");
+    });
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <ActivityIndicator color="teal" size="small" animating />
+      <UIActivityIndicator color={Colors.light.primary} />
     </View>
   );
 };
 
 export default index;
-
-const styles = StyleSheet.create({});

@@ -1,92 +1,155 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useLayoutEffect, useState } from "react";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
-import { fetchOneTransaction } from "@/src/utils/data";
-import { DBTransactionTypes } from "@/src/utils/types";
-import { ActivityIndicator, DataTable } from "react-native-paper";
+import React, { useMemo } from "react";
+import { useLocalSearchParams } from "expo-router";
+import { DataTable } from "react-native-paper";
+import { useTransactionStore } from "@/src/state/store";
+import { UIActivityIndicator } from "react-native-indicators";
+import { Colors } from "@/src/constants/Colors";
 
 const Transaction = () => {
   const { id } = useLocalSearchParams();
 
-  const navigation = useNavigation();
+  const { transactions } = useTransactionStore();
 
-  const [transaction, setTransaction] = useState<DBTransactionTypes>();
-  const [loading, setLoading] = useState(false)
-
-  useLayoutEffect(() => {
-    async function getTransaction() {
-      setLoading(true);
-      const transaction = await fetchOneTransaction(id?.toLocaleString()!);
-      if (transaction) {
-        setTransaction(transaction[0]);
-        setLoading(false);
-      } else {
-        setLoading(false);
-        navigation.goBack();
-        alert("Transaction not found");
-      }
-    }
-    getTransaction();
-  }, [id]);
+  const transaction = useMemo(
+    () =>
+      transactions.find((trans) => {
+        console.log(trans);
+        return trans.id == id;
+      }),
+    [id, transactions.length]
+  );
 
   return (
-    <View style={{justifyContent:'center', alignItems:'center', paddingHorizontal:10}}>
-      {loading? (
-       <ActivityIndicator animating size={30} style={{marginTop:70}} />
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "flex:start",
+        alignItems: "center",
+        paddingHorizontal: 10,
+      }}
+    >
+      {!transaction ? (
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <UIActivityIndicator color={Colors.light.primary} />
+        </View>
       ) : (
-  
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>
-            <Text style={{fontSize:20, fontWeight:'bold', textAlign:'center'}}>
-
-            Transaction details
-            </Text>
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>
+              <Text
+                style={{
+                  fontSize: 25,
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  color: "black",
+                }}
+              >
+                Transaction details
+              </Text>
             </DataTable.Title>
-        </DataTable.Header>
+          </DataTable.Header>
 
-        <DataTable.Row>
-          <DataTable.Cell>{transaction?.network === "bank_transfer" ? "Type" : "Network"}</DataTable.Cell>
-          <DataTable.Cell>{transaction?.network}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>{transaction?.network === "bank_transfer" ? "Currency" : "Plan Siza"}</DataTable.Cell>
-          <DataTable.Cell>{transaction?.plan_size}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Previous Balance</DataTable.Cell>
-          <DataTable.Cell>{transaction?.previous_balance}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>New Balance</DataTable.Cell>
-          <DataTable.Cell>{transaction?.new_balance}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Amount</DataTable.Cell>
-          <DataTable.Cell>{transaction?.amount}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>{transaction?.network === "bank_transfer" ? "Refrence ID" : "Phone"}</DataTable.Cell>
-          <DataTable.Cell>{transaction?.phone}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Transaction ID</DataTable.Cell>
-          <DataTable.Cell>
-            <Text style={{fontSize:14}}>
-
-            {transaction?.transaction_id}
-            </Text>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.network === "bank_transfer" ? "Type" : "Network"}
+              </Text>
             </DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Status</DataTable.Cell>
-          <DataTable.Cell>{transaction?.status}</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row>
-          <DataTable.Cell>Data</DataTable.Cell>
-          <DataTable.Cell>{transaction?.created_at && new Date(transaction?.created_at).toLocaleDateString()}</DataTable.Cell>
-        </DataTable.Row>
-      </DataTable>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>{transaction?.network}</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.network === "bank_transfer"
+                  ? "Currency"
+                  : "Plan Size"}
+              </Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>{transaction?.plan_size}</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>Previous Balance</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.previous_balance}
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>New Balance</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>{transaction?.new_balance}</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>Amount</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>{transaction?.amount}</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.network === "bank_transfer"
+                  ? "Refrence ID"
+                  : "Phone"}
+              </Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>{transaction?.phone}</Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>Transaction ID</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.transaction_id}
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>Status</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text
+                style={{
+                  fontSize: 18,
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                {transaction?.status}
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+          <DataTable.Row>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>Date</Text>
+            </DataTable.Cell>
+            <DataTable.Cell>
+              <Text style={{ fontSize: 18 }}>
+                {transaction?.created_at &&
+                  new Date(transaction?.created_at).toLocaleDateString()}
+              </Text>
+            </DataTable.Cell>
+          </DataTable.Row>
+        </DataTable>
       )}
     </View>
   );

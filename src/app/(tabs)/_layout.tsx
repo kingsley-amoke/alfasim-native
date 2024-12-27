@@ -1,10 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect } from "react";
-import { Redirect, Tabs, useRouter } from "expo-router";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { Tabs, useRouter } from "expo-router";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { supabase } from "@/src/utils/supabase";
 import { Avatar } from "react-native-paper";
 import images from "@/images";
+import { Colors } from "@/src/constants/Colors";
 
 const TabLayout = () => {
   const router = useRouter();
@@ -18,8 +19,14 @@ const TabLayout = () => {
     <>
       <Tabs
         screenOptions={{
-          tabBarStyle: { padding: 15, marginBottom: 2, height: 70 },
+          tabBarStyle: {
+            padding: 15,
+            marginBottom: 2,
+            height: 70,
+          },
           tabBarLabelStyle: { fontSize: 10, fontWeight: "bold" },
+          tabBarIconStyle: { color: Colors.primary },
+          tabBarActiveTintColor: Colors.primary,
         }}
       >
         <Tabs.Screen
@@ -33,19 +40,20 @@ const TabLayout = () => {
               <MaterialIcons name="home" size={30} color={color} />
             ),
 
-            headerRight: ({ pressColor }) => (
+            headerRight: () => (
               <TouchableOpacity style={{ marginRight: 20 }}>
                 <MaterialIcons
                   name="logout"
                   size={30}
-                  color={pressColor}
-                  onPress={logout}
+                  color={Colors.light.error}
+                  onPress={() => logout()}
                 />
               </TouchableOpacity>
             ),
             headerLeft: () => (
               <Avatar.Image
                 source={images.icon}
+                size={44}
                 style={{ paddingLeft: 2, marginLeft: 5 }}
               />
             ),

@@ -308,7 +308,8 @@ export const fetchTransactions = async (email: string) => {
     const { data, error } = await supabase
       .from("transactions")
       .select()
-      .eq("email", email);
+      .eq("email", email)
+      .order("created_at", { ascending: false });
 
     let transactions: DBTransactionTypes[] = data!;
 

@@ -1,25 +1,65 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { SegmentedButtons } from "react-native-paper";
 import Transactions from "@/src/components/Transactions";
-
-import { useTransactionStore } from "@/src/state/store";
+import { UIActivityIndicator } from "react-native-indicators";
 import { Colors } from "@/src/constants/Colors";
-import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
+import { supabase } from "@/src/utils/supabase";
+import { useRouter } from "expo-router";
+import { CustomToast } from "@/src/utils/shared";
+import { fetchTransactions } from "@/src/utils/data";
+import { useTransactionStore } from "@/src/state/store";
 
 const transactions = () => {
-  const [value, setValue] = useState("all");
-
+  const router = useRouter();
   const liveBanner = process.env.EXPO_PUBLIC_BANNER_ADS as string;
 
-  const { transactions } = useTransactionStore();
+  const { transactions, storeTransactions } = useTransactionStore();
 
-  const data = transactions.filter((item) => item.purpose === "data");
-  const airtime = transactions.filter((item) => item.purpose === "airtime");
-  const recharge = transactions.filter((item) => item.purpose === "wallet");
+  const [value, setValue] = useState("all");
+  const [loggedUser, setLoggedUser] = useState("");
+
+  supabase.auth
+    .getUser()
+    .then(({ data: { user } }) => {
+      if (!user) {
+        router.replace("/login");
+      } else {
+        setLoggedUser(user.email!);
+        fetchTransactions(loggedUser)
+          .then((data) => storeTransactions(data!))
+          .catch((error) => console.log(error));
+      }
+    })
+    .catch((error) => {
+      CustomToast(
+        "Please login to continue...",
+        Colors.light.error,
+        Colors.light.onError
+      );
+      router.replace("/login");
+    });
+
+  const data = useMemo(
+    () => transactions.filter((item) => item.purpose === "data"),
+    [transactions.length]
+  );
+  const airtime = useMemo(
+    () => transactions.filter((item) => item.purpose === "airtime"),
+    [transactions.length]
+  );
+  const recharge = useMemo(
+    () => transactions.filter((item) => item.purpose === "wallet"),
+    [transactions.length]
+  );
 
   return (
-    <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+    <View style={{ flex: 1 }}>
       <SegmentedButtons
         value={value}
         theme={{
@@ -30,7 +70,7 @@ const transactions = () => {
         }}
         onValueChange={setValue}
         density="regular"
-        style={{ height: 50 }}
+        style={{ height: 50, marginTop: 10 }}
         buttons={[
           {
             value: "all",
@@ -49,27 +89,31 @@ const transactions = () => {
           },
         ]}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {value === "all" ? (
-          <View style={{ paddingHorizontal: 10 }}>
-            <Transactions items={transactions} />
-          </View>
-        ) : value === "data" ? (
-          <View>
-            <Transactions items={data} />
-          </View>
-        ) : value === "airtime" ? (
-          <View>
-            <Transactions items={airtime} />
-          </View>
-        ) : (
-          <View>
-            <Transactions items={recharge} />
-          </View>
-        )}
-      </ScrollView>
+      {transactions.length > 0 ? (
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+          {value === "all" ? (
+            <View style={{ paddingHorizontal: 10 }}>
+              <Transactions items={transactions} />
+            </View>
+          ) : value === "data" ? (
+            <View>
+              <Transactions items={data} />
+            </View>
+          ) : value === "airtime" ? (
+            <View>
+              <Transactions items={airtime} />
+            </View>
+          ) : (
+            <View>
+              <Transactions items={recharge} />
+            </View>
+          )}
+        </ScrollView>
+      ) : (
+        <UIActivityIndicator color={Colors.light.primary} />
+      )}
       <BannerAd
-        unitId={liveBanner}
+        unitId={TestIds.ADAPTIVE_BANNER}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
@@ -78,10 +122,8 @@ const transactions = () => {
           },
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default transactions;
-
-const styles = StyleSheet.create({});

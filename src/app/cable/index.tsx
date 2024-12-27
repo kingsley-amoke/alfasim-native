@@ -183,12 +183,18 @@ const index = () => {
         />
         <Button
           mode="contained"
-          style={{ marginVertical: 20, paddingVertical: 10 }}
+          style={{
+            marginVertical: 20,
+            paddingVertical: 10,
+            // backgroundColor: Colors.primary,
+          }}
           onPress={showDialog}
-          disabled={loading ? true : false}
+          disabled
+          loading={loading}
         >
           <Text style={{ color: "#fff", fontSize: 20 }}>
-            {loading ? "Submitting" : "Pay"}
+            {/* {loading ? "Submitting" : "Pay"} */}
+            Coming Soon...
           </Text>
         </Button>
       </View>

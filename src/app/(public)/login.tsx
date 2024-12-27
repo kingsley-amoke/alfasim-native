@@ -1,11 +1,10 @@
-import { StyleSheet, Text, useColorScheme, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, TextInput } from "react-native-paper";
 import { supabase } from "@/src/utils/supabase";
-import { fetchUser } from "@/src/utils/data";
-import { useUserStore } from "@/src/state/store";
+
 import { Link, useRouter } from "expo-router";
-import useTheme from "@/src/hooks/useTheme";
+
 import { Colors } from "@/src/constants/Colors";
 import { CustomToast } from "@/src/utils/shared";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -16,22 +15,12 @@ const login = () => {
 
   const router = useRouter();
 
-  const colorScheme = useColorScheme();
-  const { storeUser } = useUserStore();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const [show, setShow] = useState(true);
-
-  const bgColor =
-    colorScheme == "dark" ? Colors.dark.primary : Colors.light.primary;
-  const textColor =
-    colorScheme == "dark" ? Colors.dark.surface : Colors.light.surface;
-  const errorColor =
-    colorScheme == "dark" ? Colors.dark.error : Colors.light.error;
 
   const handleLogin = async () => {
     setLoading(true);
@@ -40,25 +29,39 @@ const login = () => {
       password: password,
     };
 
-    supabase.auth.signInWithPassword(credentials).then(({ data: { user } }) => {
-      fetchUser(user?.email)
-        .then((user) => {
-          storeUser(user![0]);
-          CustomToast("Login successful", bgColor, textColor);
+    supabase.auth
+      .signInWithPassword(credentials)
+      .then(({ data, error }) => {
+        if (error) {
+          CustomToast(error.message, Colors.light.error, Colors.light.onError);
+        } else {
+          CustomToast(
+            "Login successful",
+            Colors.light.primary,
+            Colors.light.onPrimary
+          );
           router.replace("/home");
-          setLoading(false);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setLoading(false);
-          return;
-        });
-    });
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+        return;
+      });
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontWeight: "bold", fontSize: 22, marginVertical: 20 }}>
+      <Text
+        style={{
+          fontWeight: "bold",
+          fontSize: 22,
+          marginVertical: 20,
+          marginLeft: 20,
+          textAlign: "left",
+        }}
+      >
         Welcome Back
       </Text>
       <View style={{ width: "100%", paddingHorizontal: 20, gap: 10 }}>
@@ -86,7 +89,7 @@ const login = () => {
         </Text>
       </View>
       <View>
-        <Text style={{ color: errorColor }}>{error}</Text>
+        <Text style={{ color: Colors.light.error }}>{error}</Text>
       </View>
 
       <View
@@ -100,15 +103,24 @@ const login = () => {
       >
         <Button
           mode="contained"
-          style={{ width: "100%", paddingVertical: 10 }}
+          style={{
+            width: "100%",
+            paddingVertical: 10,
+            backgroundColor: loading ? "white" : Colors.primary,
+          }}
           labelStyle={{ fontSize: 20 }}
           onPress={handleLogin}
+          disabled={loading}
+          loading={loading}
         >
           {loading ? "Please wait..." : "Sign In"}
         </Button>
-        <Text style={{ marginVertical: 10 }}>
+        <Text style={{ marginVertical: 16 }}>
           Dont't have an account?{" "}
-          <Link href={"/register"} style={{ color: bgColor, marginLeft: 10 }}>
+          <Link
+            href={"/register"}
+            style={{ color: Colors.light.primary, marginLeft: 16 }}
+          >
             Sign up
           </Link>
         </Text>

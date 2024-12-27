@@ -1,5 +1,5 @@
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Plan, transactionTypes } from "@/src/utils/types";
 import {
   buyData,
@@ -9,14 +9,14 @@ import {
   setTransaction,
 } from "@/src/utils/data";
 import { useRouter } from "expo-router";
-import { useDataPlanStore, useUserStore } from "@/src/state/store";
+import { useDataPlanStore, useUsersStore } from "@/src/state/store";
 import { Colors } from "@/src/constants/Colors";
-import useTheme from "@/src/hooks/useTheme";
 import { Button, Dialog, Divider, Portal, TextInput } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import SectionedMultiSelect from "react-native-sectioned-multi-select";
 import { CustomToast } from "@/src/utils/shared";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { supabase } from "@/src/utils/supabase";
 
 const index = () => {
   interface DataType {
@@ -29,19 +29,7 @@ const index = () => {
   const router = useRouter();
 
   const { plans } = useDataPlanStore();
-  const { user, storeUser } = useUserStore();
-
-  const { colorScheme } = useTheme();
-
-  const bgColor =
-    colorScheme === "dark" ? Colors.dark.inversePrimary : Colors.light.primary;
-  const textColor =
-    colorScheme == "dark" ? Colors.dark.onBackground : Colors.light.onPrimary;
-
-  const errorToastBg =
-    colorScheme === "dark" ? Colors.dark.error : Colors.light.error;
-  const errorToastText =
-    colorScheme === "dark" ? Colors.dark.onError : Colors.light.onError;
+  const { users } = useUsersStore();
 
   const [visible, setVisible] = useState(false);
 
@@ -50,6 +38,31 @@ const index = () => {
   const hideDialog = () => setVisible(false);
 
   if (!plans) return;
+
+  const [loggedUser, setLoggedUser] = useState("");
+
+  supabase.auth
+    .getUser()
+    .then(({ data: { user } }) => {
+      if (!user) {
+        router.replace("/login");
+      } else {
+        setLoggedUser(user.email!);
+      }
+    })
+    .catch((error) => {
+      CustomToast(
+        "Please login to continue...",
+        Colors.light.error,
+        Colors.light.onError
+      );
+      router.replace("/login");
+    });
+
+  const user = useMemo(
+    () => users.find((usr) => usr.email == loggedUser)!,
+    [loggedUser]
+  );
 
   const [loading, setLoading] = useState(false);
   const [planId, setPlanId] = useState("");
@@ -146,7 +159,10 @@ const index = () => {
 
   //mtn plans by type
 
-  const mtnSME = mtnPlans.filter((plan) => plan.plan_type === "SME");
+  const mtnSME = useMemo(
+    () => mtnPlans.filter((plan) => plan.plan_type === "SME"),
+    [mtnPlans.length]
+  );
   const alfasimMtnSME: Plan[] = [];
 
   const unitGBSME = 270;
@@ -168,7 +184,10 @@ const index = () => {
           : (integer * unitGBSME).toString(),
     });
   });
-  const mtnSME2 = mtnPlans.filter((plan) => plan.plan_type === "SME2");
+  const mtnSME2 = useMemo(
+    () => mtnPlans.filter((plan) => plan.plan_type === "SME2"),
+    [mtnPlans.length]
+  );
   const alfasimMtnSME2: Plan[] = [];
 
   const unitGBSME2 = 265;
@@ -191,7 +210,10 @@ const index = () => {
     });
   });
 
-  const mtnGifting = mtnPlans.filter((plan) => plan.plan_type === "GIFTING");
+  const mtnGifting = useMemo(
+    () => mtnPlans.filter((plan) => plan.plan_type === "GIFTING"),
+    [mtnPlans.length]
+  );
 
   const alfasimMtnGifting: Plan[] = [];
 
@@ -221,8 +243,9 @@ const index = () => {
     });
   });
 
-  const mtnCorporateGifting = mtnPlans.filter(
-    (plan) => plan.plan_type === "CORPORATE GIFTING"
+  const mtnCorporateGifting = useMemo(
+    () => mtnPlans.filter((plan) => plan.plan_type === "CORPORATE GIFTING"),
+    [mtnPlans.length]
   );
 
   const alfasimMtnCorporateGifting: Plan[] = [];
@@ -247,91 +270,21 @@ const index = () => {
     });
   });
 
-  const mtnCorporateGifting2 = mtnPlans.filter(
-    (plan) => plan.plan_type === "CORPORATE GIFTING2"
+  const gloGifting = useMemo(
+    () => gloPlans.filter((plan) => plan.plan_type === "GIFTING"),
+    [gloPlans.length]
   );
 
-  const alfasimMtnCorporateGifting2: Plan[] = [];
+  const alfasimGloGifting: Plan[] = gloGifting;
 
-  const unitGBCorporateGifting2 = 265 + 5;
-
-  mtnCorporateGifting2.forEach((plan) => {
-    const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
-
-    alfasimMtnCorporateGifting2.push({
-      id: plan.id,
-      dataplan_id: plan.dataplan_id,
-      network: plan.network,
-      plan_type: plan.plan_type,
-      plan_network: plan.plan_network,
-      month_validate: plan.month_validate,
-      plan: plan.plan,
-      plan_amount:
-        plan.plan.slice(-2) === "MB"
-          ? (parseInt(plan.plan_amount) + 5).toString()
-          : (integer * unitGBCorporateGifting2).toString(),
-    });
-  });
-
-  const mtnDataCoupons = mtnPlans.filter(
-    (plan) => plan.plan_type === "DATA COUPONS"
-  );
-
-  const alfasimMtnDataCoupons: Plan[] = [];
-
-  const unitGBDataCoupons = 245 + 5;
-
-  mtnDataCoupons.forEach((plan) => {
-    const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
-
-    alfasimMtnDataCoupons.push({
-      id: plan.id,
-      dataplan_id: plan.dataplan_id,
-      network: plan.network,
-      plan_type: plan.plan_type,
-      plan_network: plan.plan_network,
-      month_validate: plan.month_validate,
-      plan: plan.plan,
-      plan_amount:
-        plan.plan.slice(-2) === "MB"
-          ? (parseInt(plan.plan_amount) + 5).toString()
-          : (integer * unitGBDataCoupons).toString(),
-    });
-  });
-
-  //glo plans by type
-
-  const gloGifting = gloPlans.filter((plan) => plan.plan_type === "GIFTING");
-
-  const alfasimGloGifting: Plan[] = [];
-
-  const unitGBGloGifting = 180 + 10;
-
-  gloGifting.forEach((plan) => {
-    const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
-
-    alfasimGloGifting.push({
-      id: plan.id,
-      dataplan_id: plan.dataplan_id,
-      network: plan.network,
-      plan_type: plan.plan_type,
-      plan_network: plan.plan_network,
-      month_validate: plan.month_validate,
-      plan: plan.plan,
-      plan_amount:
-        plan.plan.slice(-2) === "MB"
-          ? (parseInt(plan.plan_amount) + 5).toString()
-          : (integer * unitGBGloGifting).toString(),
-    });
-  });
-
-  const gloCorporateGifting = gloPlans.filter(
-    (plan) => plan.plan_type === "CORPORATE GIFTING"
+  const gloCorporateGifting = useMemo(
+    () => gloPlans.filter((plan) => plan.plan_type === "CORPORATE GIFTING"),
+    [gloPlans.length]
   );
 
   const alfasimGloCorporateGifting: Plan[] = [];
 
-  const unitGBGloCorporateGifting = 230 + 10;
+  const unitGBGloCorporateGifting = 275;
 
   gloCorporateGifting.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -353,8 +306,9 @@ const index = () => {
 
   //etisalat plans by type
 
-  const etisalatGifting = etisalatPlans.filter(
-    (plan) => plan.plan_type === "GIFTING"
+  const etisalatGifting = useMemo(
+    () => etisalatPlans.filter((plan) => plan.plan_type === "GIFTING"),
+    [etisalatPlans.length]
   );
 
   const alfasimEtisalatGifting: Plan[] = [];
@@ -379,8 +333,10 @@ const index = () => {
     });
   });
 
-  const etisalatCorporateGifting = etisalatPlans.filter(
-    (plan) => plan.plan_type === "CORPORATE GIFTING"
+  const etisalatCorporateGifting = useMemo(
+    () =>
+      etisalatPlans.filter((plan) => plan.plan_type === "CORPORATE GIFTING"),
+    [etisalatPlans.length]
   );
 
   const alfasimEtisalatCorporateGifting: Plan[] = [];
@@ -416,13 +372,14 @@ const index = () => {
 
   //airtel plans by type
 
-  const airtelGifting = airtelPlans.filter(
-    (plan) => plan.plan_type === "GIFTING"
+  const airtelGifting = useMemo(
+    () => airtelPlans.filter((plan) => plan.plan_type === "GIFTING"),
+    [airtelPlans.length]
   );
 
   const alfasimAirtelGifting: Plan[] = [];
 
-  const unitGBAirtelGifting = 485 + 10;
+  const unitGBAirtelGifting = 240;
 
   airtelGifting.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -448,13 +405,14 @@ const index = () => {
     });
   });
 
-  const airtelCorporateGifting = airtelPlans.filter(
-    (plan) => plan.plan_type === "CORPORATE GIFTING"
+  const airtelCorporateGifting = useMemo(
+    () => airtelPlans.filter((plan) => plan.plan_type === "CORPORATE GIFTING"),
+    [airtelPlans.length]
   );
 
   const alfasimAirtelCorporateGifting: Plan[] = [];
 
-  const unitGBAirtelCoporateGifting = 275 + 10;
+  const unitGBAirtelCoporateGifting = 285;
 
   airtelCorporateGifting.forEach((plan) => {
     const integer = Math.trunc(parseInt(plan.plan.slice(0, -2)));
@@ -537,16 +495,6 @@ const index = () => {
             break;
         }
         break;
-      case "CORPORATE GIFTING2":
-        switch (currentNetwork) {
-          case "MTN":
-            setDataPlan(alfasimMtnCorporateGifting2);
-            break;
-        }
-        break;
-      case "DATA COUPONS":
-        setDataPlan(alfasimMtnDataCoupons);
-        break;
     }
   };
 
@@ -557,7 +505,11 @@ const index = () => {
       parseInt(user?.balance) < parseInt(selectedPlan?.plan_amount) ||
       !user.balance
     ) {
-      CustomToast("Insufficient Balance", errorToastBg, errorToastText);
+      CustomToast(
+        "Insufficient Balance",
+        Colors.light.error,
+        Colors.light.onError
+      );
       return;
     }
 
@@ -593,15 +545,15 @@ const index = () => {
       setTransaction(data);
       CustomToast(
         "Network error, Try again later",
-        errorToastBg,
-        errorToastText
+        Colors.light.error,
+        Colors.light.onError
       );
       setLoading(false);
       return;
     }
 
     if (response.Status === "successful") {
-      CustomToast("Successfull", bgColor, textColor);
+      CustomToast("Successfull", Colors.light.primary, Colors.light.onPrimary);
 
       setLoading(false);
 
@@ -627,17 +579,7 @@ const index = () => {
         commission,
         user?.referee,
         user?.referral_bonus!
-      ).then(async () => {
-        const user = await fetchUser(data.email);
-        storeUser(user![0]);
-        router.push("/");
-      });
-
-      // setTransaction(data);
-
-      // deductBalance(data.email, data.amount);
-
-      // handleCommission(data.email, commission);
+      ).then(() => router.push("/"));
     } else {
       if (response.Status !== "failed") {
         console.log(response.Status);
@@ -691,33 +633,33 @@ const index = () => {
         style={{
           borderRadius: 10,
           marginHorizontal: 10,
-          backgroundColor: bgColor,
+          backgroundColor: Colors.primary,
           padding: 10,
         }}
       >
         <View style={styles.network}>
-          <Text style={{ color: textColor }}>*461*4#</Text>
-          <Text style={{ color: textColor }}>MTN SME</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>*461*4#</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>MTN SME</Text>
         </View>
         <Divider bold horizontalInset />
         <View style={styles.network}>
-          <Text style={{ color: textColor }}>*131*4#</Text>
-          <Text style={{ color: textColor }}>MTN Gifting</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>*131*4#</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>MTN Gifting</Text>
         </View>
         <Divider bold horizontalInset />
         <View style={styles.network}>
-          <Text style={{ color: textColor }}>*228#</Text>
-          <Text style={{ color: textColor }}>9mobile</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>*228#</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>9mobile</Text>
         </View>
         <Divider bold horizontalInset />
         <View style={styles.network}>
-          <Text style={{ color: textColor }}>*140#</Text>
-          <Text style={{ color: textColor }}>Airtel</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>*140#</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>Airtel</Text>
         </View>
         <Divider bold horizontalInset />
         <View style={styles.network}>
-          <Text style={{ color: textColor }}>*323#</Text>
-          <Text style={{ color: textColor }}>Glo</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>*323#</Text>
+          <Text style={{ color: Colors.light.onPrimary }}>Glo</Text>
         </View>
       </View>
 
@@ -728,7 +670,7 @@ const index = () => {
           marginVertical: 20,
           padding: 10,
           borderWidth: 1,
-          borderColor: bgColor,
+          borderColor: Colors.light.primary,
         }}
       >
         <Text>Network*</Text>
@@ -780,12 +722,22 @@ const index = () => {
           onChangeText={(value) => setPhone(value)}
         />
         <Button
-          mode="outlined"
-          style={{ marginVertical: 20, paddingVertical: 10 }}
+          mode={loading ? "outlined" : "contained"}
+          style={{
+            marginVertical: 20,
+            paddingVertical: 10,
+            backgroundColor: loading ? "white" : Colors.primary,
+          }}
           onPress={showDialog}
-          disabled={loading ? true : false}
+          disabled={loading}
+          loading={loading}
         >
-          <Text style={{ fontSize: 20 }}>
+          <Text
+            style={{
+              fontSize: 20,
+              color: loading ? Colors.primary : Colors.light.onPrimary,
+            }}
+          >
             {loading ? "Submitting" : "Buy Data"}
           </Text>
         </Button>
