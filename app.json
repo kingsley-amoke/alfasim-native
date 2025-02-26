@@ -2,7 +2,7 @@
   "expo": {
     "name": "Alfasim Data",
     "slug": "alfasimdata",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/adaptive-icon.png",
     "scheme": "myapp",
@@ -41,8 +41,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-4104264714178296~8059164510",
-          "iosAppId": "ca-app-pub-4104264714178296~8059164510",
+          "androidAppId": "ca-app-pub-8634817154713777~4405034500",
+          "iosAppId": "ca-app-pub-8634817154713777~4405034500",
           "skAdNetworkItems": [
             "cstr6suwn9.skadnetwork",
             "4fzdc2evr5.skadnetwork",

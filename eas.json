@@ -22,7 +22,7 @@
        "EXPO_PUBLIC_ASB_AUTH_TOKEN":"34851307c58aeebfc0f4dec980e9cacee77e86c9",
        "EXPO_PUBLIC_PAYSTACK_PAYMENT_URL":"https://api.paystack.co",
        "EXPO_PUBLIC_PAYSTACK_SECRET_KEY":"sk_live_c5667bf11f8c8fccd17994d2a7978487b06a15cb",
-       "EXPO_PUBLIC_BANNER_ADS":"ca-app-pub-4104264714178296/3245821538"
+       "EXPO_PUBLIC_BANNER_ADS":"ca-app-pub-8634817154713777/2764154939"
       }
     },
     "production": {
@@ -34,7 +34,7 @@
         "EXPO_PUBLIC_ASB_AUTH_TOKEN":"34851307c58aeebfc0f4dec980e9cacee77e86c9",
         "EXPO_PUBLIC_PAYSTACK_PAYMENT_URL":"https://api.paystack.co",
         "EXPO_PUBLIC_PAYSTACK_SECRET_KEY":"sk_live_c5667bf11f8c8fccd17994d2a7978487b06a15cb",
-        "EXPO_PUBLIC_BANNER_ADS":"ca-app-pub-4104264714178296/3245821538"
+        "EXPO_PUBLIC_BANNER_ADS":"ca-app-pub-8634817154713777/2764154939"
        }
     }
   },

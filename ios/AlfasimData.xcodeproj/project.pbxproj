@@ -14,7 +14,7 @@
 		96905EF65AED1B983A6B3ABC /* libPods-AlfasimData.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 58EEBF8E8E6FB1BC6CAF49B5 /* libPods-AlfasimData.a */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
-		59AA96A11D594286A6541E2E /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F4B57D9EE549C9BF62E900 /* noop-file.swift */; };
+		F2BD992635B049AF9C2D6119 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FEBB284CA9748E098739B15 /* noop-file.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,8 +31,8 @@
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-AlfasimData/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		E2F4B57D9EE549C9BF62E900 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "AlfasimData/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
-		6F507526C8C440C5A547B02F /* AlfasimData-Bridging-Header.h */ = {isa = PBXFileReference; name = "AlfasimData-Bridging-Header.h"; path = "AlfasimData/AlfasimData-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
+		0FEBB284CA9748E098739B15 /* noop-file.swift */ = {isa = PBXFileReference; name = "noop-file.swift"; path = "AlfasimData/noop-file.swift"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.swift; explicitFileType = undefined; includeInIndex = 0; };
+		913D8E45B85E47959E6A48CC /* AlfasimData-Bridging-Header.h */ = {isa = PBXFileReference; name = "AlfasimData-Bridging-Header.h"; path = "AlfasimData/AlfasimData-Bridging-Header.h"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,8 +57,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB71A68108700A75B9A /* main.m */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				E2F4B57D9EE549C9BF62E900 /* noop-file.swift */,
-				6F507526C8C440C5A547B02F /* AlfasimData-Bridging-Header.h */,
+				0FEBB284CA9748E098739B15 /* noop-file.swift */,
+				913D8E45B85E47959E6A48CC /* AlfasimData-Bridging-Header.h */,
 			);
 			name = AlfasimData;
 			sourceTree = "<group>";
@@ -198,7 +198,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				CABC6F8E3CBF4DD296480C7F /* AlfasimData-Bridging-Header.h in Resources */,
+				5D3DF910933D44C1BA0C8497 /* AlfasimData-Bridging-Header.h in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -274,7 +274,7 @@
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */,
-				59AA96A11D594286A6541E2E /* noop-file.swift in Sources */,
+				F2BD992635B049AF9C2D6119 /* noop-file.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
